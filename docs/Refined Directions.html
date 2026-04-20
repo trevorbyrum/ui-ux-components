@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Refined Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Plus+Jakarta+Sans:ital,wght@0,300..700;1,300..700&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+/*
+  TASTE PROFILE (from user's reference sites):
+  
+  Linear: Dark near-black, barely-there violet accents, monospace figure labels,
+          clean sans-serif, product-forward, "tool" aesthetic
+  
+  Adaline: Clean white with subtle depth, numbered sections, polished layering,
+           restraint in color, "cool without trying" energy
+  
+  Ramp: Clean, financial, sharp type, clear hierarchy
+  Planhat: Just clean. Professional. Nothing extra.
+  
+  COMMON THREAD: 
+  - Extreme restraint — color is a whisper, not a shout
+  - Professional density — not too sparse, not cluttered
+  - Depth through layering & shadow, not through color
+  - Sharp geometric sans-serif (no decorative display fonts)
+  - Accents are muted/desaturated — never "pop" loudly
+  - Monochrome-forward with 1 quiet accent
+*/
+
+const font = '"Inter", -apple-system, sans-serif';
+
+function Direction({ d }) {
+  return (
+    <div style={{ width: 640, fontFamily: font, color: d.fg1, background: d.pageBg, borderRadius: 2, overflow: 'hidden', fontSize: 13 }}>
+      {/* Header */}
+      <div style={{ background: d.heroBg, color: d.heroFg, padding: '32px 36px 28px' }}>
+        <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: 'uppercase', opacity: 0.35, marginBottom: 12, fontVariantNumeric: 'tabular-nums' }}>{d.label}</div>
+        <div style={{ fontSize: 22, fontWeight: 600, letterSpacing: -0.5, marginBottom: 6 }}>{d.name}</div>
+        <div style={{ fontSize: 13, lineHeight: 1.6, opacity: 0.55, maxWidth: 460 }}>{d.desc}</div>
+      </div>
+
+      {/* Color strip — very thin, subtle */}
+      <div style={{ display: 'flex', height: 3 }}>
+        {d.strip.map((c, i) => <div key={i} style={{ flex: 1, background: c }} />)}
+      </div>
+
+      <div style={{ padding: '28px 36px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+        
+        {/* Nav bar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, padding: '10px 16px', background: d.navBg, borderRadius: 8, border: `1px solid ${d.border}` }}>
+          <span style={{ fontSize: 14, fontWeight: 600, letterSpacing: -0.3, color: d.fg1 }}>acme</span>
+          <div style={{ display: 'flex', gap: 16, flex: 1 }}>
+            {['Products', 'Pricing', 'Docs', 'Blog'].map((t, i) => (
+              <span key={i} style={{ fontSize: 13, color: d.fg3, fontWeight: 400, cursor: 'pointer', ...(i === 0 ? { color: d.fg1, fontWeight: 500 } : {}) }}>{t}</span>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <span style={{ fontSize: 13, color: d.fg3, cursor: 'pointer' }}>Log in</span>
+            <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '5px 12px', background: d.btnPrimary, color: d.btnPrimaryFg, border: 'none', borderRadius: 6, cursor: 'pointer' }}>Get started</button>
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button style={{ fontFamily: font, fontSize: 13, fontWeight: 500, padding: '9px 18px', background: d.btnPrimary, color: d.btnPrimaryFg, border: 'none', borderRadius: 6, cursor: 'pointer' }}>Primary action</button>
+          <button style={{ fontFamily: font, fontSize: 13, fontWeight: 500, padding: '9px 18px', background: 'transparent', color: d.fg1, border: `1px solid ${d.border}`, borderRadius: 6, cursor: 'pointer' }}>Secondary</button>
+          <button style={{ fontFamily: font, fontSize: 13, fontWeight: 500, padding: '9px 18px', background: d.subtleBg, color: d.fg2, border: 'none', borderRadius: 6, cursor: 'pointer' }}>Tertiary</button>
+        </div>
+
+        {/* Input row */}
+        <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ flex: 1, padding: '9px 12px', borderRadius: 6, fontSize: 13, fontFamily: font, border: `1px solid ${d.border}`, background: d.inputBg, color: d.fg3 }}>Search or type a command...</div>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '9px 14px', background: d.btnPrimary, color: d.btnPrimaryFg, border: 'none', borderRadius: 6, cursor: 'pointer' }}>Search</button>
+        </div>
+
+        {/* Feature cards — clean, minimal */}
+        <div style={{ display: 'flex', gap: 1, background: d.border, borderRadius: 8, overflow: 'hidden' }}>
+          {d.features.map((f, i) => (
+            <div key={i} style={{ flex: 1, background: d.cardBg, padding: 18 }}>
+              <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 1.5, textTransform: 'uppercase', color: d.fg3, marginBottom: 10, fontVariantNumeric: 'tabular-nums' }}>{f.num}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4, letterSpacing: -0.2, color: d.fg1 }}>{f.title}</div>
+              <div style={{ fontSize: 12, color: d.fg3, lineHeight: 1.5 }}>{f.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Table-like list */}
+        <div style={{ border: `1px solid ${d.border}`, borderRadius: 8, overflow: 'hidden' }}>
+          {['Analytics overview', 'Team performance', 'Deployment logs'].map((item, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '11px 16px', background: d.cardBg,
+              borderBottom: i < 2 ? `1px solid ${d.border}` : 'none',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 8, height: 8, borderRadius: 2, background: d.dotColors[i] }} />
+                <span style={{ fontSize: 13, fontWeight: 500, color: d.fg1 }}>{item}</span>
+              </div>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                <span style={{ fontSize: 12, color: d.fg3, fontVariantNumeric: 'tabular-nums' }}>{['Updated 2m ago', 'Updated 1h ago', 'Updated 3h ago'][i]}</span>
+                <span style={{ fontSize: 12, color: d.accent, cursor: 'pointer', fontWeight: 500 }}>View →</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Badges */}
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {d.badges.map((b, i) => (
+            <span key={i} style={{ fontSize: 11, fontWeight: 500, padding: '3px 10px', borderRadius: 5, background: b.bg, color: b.fg, border: `1px solid ${b.border || 'transparent'}` }}>{b.text}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════
+   A: VOID — Linear-inspired dark
+   Near-black with barely-there violet. Tool aesthetic.
+═══════════════════════════════════════════════════ */
+const dirA = {
+  label: 'Direction A',
+  name: 'Void',
+  desc: 'Near-black surfaces. Color is almost absent — just a whisper of cool violet for interactive elements. The product is the color.',
+  heroBg: '#0a0a0f', heroFg: '#d0cfe0',
+  pageBg: '#0e0e14', navBg: '#13131a', cardBg: '#111118',
+  fg1: '#e0dff0', fg2: '#8888a0', fg3: '#5a5a6e',
+  border: '#1e1e2a', subtleBg: '#18182222',
+  inputBg: '#0c0c12',
+  accent: '#8b85b8',
+  btnPrimary: '#e0dff0', btnPrimaryFg: '#0a0a0f',
+  strip: ['#0a0a0f', '#1e1e2a', '#5a5a6e', '#8b85b8', '#e0dff0'],
+  features: [
+    { num: '01', title: 'Intake', sub: 'Capture and triage from any source' },
+    { num: '02', title: 'Plan', sub: 'Roadmap with clear priorities' },
+    { num: '03', title: 'Build', sub: 'Track work across teams' },
+  ],
+  dotColors: ['#8b85b8', '#5ac8b0', '#e8a060'],
+  badges: [
+    { text: 'Active', bg: 'rgba(90,200,176,0.12)', fg: '#5ac8b0', border: 'rgba(90,200,176,0.2)' },
+    { text: 'In review', bg: 'rgba(139,133,184,0.12)', fg: '#a8a0d0', border: 'rgba(139,133,184,0.2)' },
+    { text: 'Blocked', bg: 'rgba(232,160,96,0.12)', fg: '#e8a060', border: 'rgba(232,160,96,0.2)' },
+    { text: 'Draft', bg: 'rgba(255,255,255,0.05)', fg: '#5a5a6e', border: '#1e1e2a' },
+  ],
+};
+
+/* ═══════════════════════════════════════════════════
+   B: STUDIO — Adaline-inspired light
+   Clean white, subtle depth layers, quiet blue accent
+═══════════════════════════════════════════════════ */
+const dirB = {
+  label: 'Direction B',
+  name: 'Studio',
+  desc: 'Clean white canvas with subtle depth through layered borders and shadows. One quiet blue accent that never shouts. Cool and polished.',
+  heroBg: '#111118', heroFg: '#e8e8f0',
+  pageBg: '#f8f8fa', navBg: '#fff', cardBg: '#fff',
+  fg1: '#111118', fg2: '#6b6b80', fg3: '#9898a8',
+  border: '#e8e8ee', subtleBg: '#f0f0f4',
+  inputBg: '#fff',
+  accent: '#4a6fa5',
+  btnPrimary: '#111118', btnPrimaryFg: '#f8f8fa',
+  strip: ['#111118', '#4a6fa5', '#9898a8', '#e8e8ee', '#f8f8fa'],
+  features: [
+    { num: '01', title: 'Iterate', sub: 'Sketch, test, and refine prompts' },
+    { num: '02', title: 'Evaluate', sub: 'Measure against benchmarks' },
+    { num: '03', title: 'Deploy', sub: 'Ship to production safely' },
+  ],
+  dotColors: ['#4a6fa5', '#3a8a6a', '#c07a30'],
+  badges: [
+    { text: 'Production', bg: '#e6f0e8', fg: '#2a6a3a', border: '#d0e4d4' },
+    { text: 'Staging', bg: '#e8ecf4', fg: '#4a6fa5', border: '#d4dcea' },
+    { text: 'Failed', bg: '#f4e8e8', fg: '#a04040', border: '#e8d4d4' },
+    { text: 'Pending', bg: '#f0f0f4', fg: '#9898a8', border: '#e8e8ee' },
+  ],
+};
+
+/* ═══════════════════════════════════════════════════
+   C: CARBON — Ramp/Planhat inspired neutral
+   Warm-neutral gray system, dark header, very sharp
+═══════════════════════════════════════════════════ */
+const dirC = {
+  label: 'Direction C',
+  name: 'Carbon',
+  desc: 'Warm neutral grays — not cold, not warm. Dark header for authority, light body for clarity. Accent is a desaturated teal that\'s barely noticeable.',
+  heroBg: '#1a1a1e', heroFg: '#e4e4e8',
+  pageBg: '#f6f6f7', navBg: '#fff', cardBg: '#fff',
+  fg1: '#1a1a1e', fg2: '#6a6a72', fg3: '#9a9aa2',
+  border: '#e6e6ea', subtleBg: '#f0f0f2',
+  inputBg: '#fff',
+  accent: '#4a8a88',
+  btnPrimary: '#1a1a1e', btnPrimaryFg: '#f6f6f7',
+  strip: ['#1a1a1e', '#4a8a88', '#9a9aa2', '#e6e6ea', '#f6f6f7'],
+  features: [
+    { num: '01', title: 'Spend', sub: 'Real-time visibility and controls' },
+    { num: '02', title: 'Automate', sub: 'Close the books 5x faster' },
+    { num: '03', title: 'Report', sub: 'Custom analytics and insights' },
+  ],
+  dotColors: ['#4a8a88', '#6a7aaa', '#c87a40'],
+  badges: [
+    { text: 'Approved', bg: '#e4f0ef', fg: '#2a6a68', border: '#d0e4e2' },
+    { text: 'Pending', bg: '#f0f0f2', fg: '#6a6a72', border: '#e6e6ea' },
+    { text: 'Declined', bg: '#f4e6e4', fg: '#a04030', border: '#e8d4d0' },
+    { text: 'New', bg: '#e8ecf2', fg: '#5a6a90', border: '#d8e0ea' },
+  ],
+};
+
+/* ═══════════════════════════════════════════════════
+   D: DUAL — Both modes side-by-side
+   Shows how the system flexes between light and dark
+═══════════════════════════════════════════════════ */
+const dirD_dark = {
+  label: 'Direction D · Dark',
+  name: 'Dual — Dark',
+  desc: 'One system, two modes. Dark uses near-black with desaturated blue accent. Light inverts cleanly. The accent stays identical across both.',
+  heroBg: '#08080d', heroFg: '#d0d0e0',
+  pageBg: '#0c0c12', navBg: '#111118', cardBg: '#111118',
+  fg1: '#e0e0ee', fg2: '#7878908', fg3: '#555568',
+  border: '#1c1c28', subtleBg: '#151520',
+  inputBg: '#0a0a10',
+  accent: '#6888b8',
+  btnPrimary: '#e0e0ee', btnPrimaryFg: '#08080d',
+  strip: ['#08080d', '#1c1c28', '#6888b8', '#e0e0ee'],
+  features: [
+    { num: '01', title: 'Connect', sub: 'Integrate your stack' },
+    { num: '02', title: 'Automate', sub: 'Rules and workflows' },
+    { num: '03', title: 'Scale', sub: 'Grow without friction' },
+  ],
+  dotColors: ['#6888b8', '#6aaa80', '#d8885a'],
+  badges: [
+    { text: 'Live', bg: 'rgba(106,170,128,0.12)', fg: '#6aaa80', border: 'rgba(106,170,128,0.2)' },
+    { text: 'Testing', bg: 'rgba(104,136,184,0.12)', fg: '#88a8d0', border: 'rgba(104,136,184,0.2)' },
+    { text: 'Error', bg: 'rgba(216,136,90,0.12)', fg: '#d8885a', border: 'rgba(216,136,90,0.2)' },
+    { text: 'Paused', bg: 'rgba(255,255,255,0.04)', fg: '#555568', border: '#1c1c28' },
+  ],
+};
+
+const dirD_light = {
+  ...dirD_dark,
+  label: 'Direction D · Light',
+  name: 'Dual — Light',
+  heroBg: '#111118', heroFg: '#e8e8f0',
+  pageBg: '#f7f7fa', navBg: '#fff', cardBg: '#fff',
+  fg1: '#111118', fg2: '#6868808', fg3: '#9898a8',
+  border: '#e4e4ec', subtleBg: '#eeeeF4',
+  inputBg: '#fff',
+  btnPrimary: '#111118', btnPrimaryFg: '#f7f7fa',
+  strip: ['#111118', '#6888b8', '#e4e4ec', '#f7f7fa'],
+  badges: [
+    { text: 'Live', bg: '#e4f0e8', fg: '#2a6a42', border: '#d0e4d4' },
+    { text: 'Testing', bg: '#e4ecf4', fg: '#4a6a94', border: '#d4e0ec' },
+    { text: 'Error', bg: '#f4e8e4', fg: '#a05030', border: '#e8d8d0' },
+    { text: 'Paused', bg: '#f0f0f4', fg: '#9898a8', border: '#e4e4ec' },
+  ],
+};
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection title="Recalibrated — Sharp, Clean, Professional" subtitle="Channeling Linear, Adaline, Ramp, Planhat: extreme restraint, precise type, depth through layering.">
+        <DCArtboard label="A · Void — Dark tool aesthetic" width={640} height={780}>
+          <Direction d={dirA} />
+        </DCArtboard>
+        <DCArtboard label="B · Studio — Polished light canvas" width={640} height={780}>
+          <Direction d={dirB} />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection title="More Options" subtitle="Warm neutral and a dual light/dark system.">
+        <DCArtboard label="C · Carbon — Warm neutral, sharp" width={640} height={780}>
+          <Direction d={dirC} />
+        </DCArtboard>
+        <DCArtboard label="D · Dual — Dark mode" width={640} height={780}>
+          <Direction d={dirD_dark} />
+        </DCArtboard>
+        <DCArtboard label="D · Dual — Light mode" width={640} height={780}>
+          <Direction d={dirD_light} />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

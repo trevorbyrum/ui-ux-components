@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Style Directions — Research-Informed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Plus+Jakarta+Sans:ital,wght@0,300..700;1,300..700&family=Outfit:wght@300..700&family=Sora:wght@300..700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Crimson+Pro:ital,wght@0,300..700;1,300..700&family=Albert+Sans:ital,wght@0,300..700;1,300..700&family=Bricolage+Grotesque:opsz,wght@12..96,300..700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+/*
+  DESIGN RATIONALE (per research docs):
+  
+  - 60-30-10 rule: 60% neutral bg, 30% secondary surfaces, 10% accent
+  - Color psychology: each direction uses a different emotional register
+  - Aesthetic-usability effect: beautiful = perceived as more usable
+  - Pre-attentive processing: accent must differ on a single feature (hue/saturation) for instant pop
+  - Tinted neutrals: grays tinted toward accent hue feel more cohesive (not flat)
+  - Cognitive load: clean hierarchy, not competing visual noise
+  - Von Restorff: CTA must be the ONLY saturated element
+  - 8px spacing grid throughout
+*/
+
+function DirectionPage({ d }) {
+  const card = {
+    background: d.cardBg, borderRadius: d.radius, padding: 24,
+    border: `1px solid ${d.cardBorder}`, boxShadow: d.cardShadow,
+  };
+  return (
+    <div style={{ width: 640, fontFamily: d.sans, color: d.fg1, background: d.pageBg, borderRadius: 2, overflow: 'hidden' }}>
+      {/* Hero band — 60-30-10: this is the 30% secondary */}
+      <div style={{ background: d.heroBg, color: d.heroFg, padding: '32px 36px 28px' }}>
+        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.8, textTransform: 'uppercase', opacity: 0.5, marginBottom: 10 }}>{d.tag}</div>
+        <h2 style={{ fontFamily: d.display, fontSize: 30, fontWeight: d.displayWeight, letterSpacing: -0.4, marginBottom: 8, lineHeight: 1.15 }}>{d.name}</h2>
+        <p style={{ fontSize: 14, lineHeight: 1.6, opacity: 0.8, maxWidth: 480 }}>{d.desc}</p>
+      </div>
+
+      {/* Color strip */}
+      <div style={{ display: 'flex', height: 6 }}>
+        {d.strip.map((c, i) => <div key={i} style={{ flex: 1, background: c }} />)}
+      </div>
+
+      {/* Page body — this is the 60% dominant */}
+      <div style={{ padding: 32, display: 'flex', flexDirection: 'column', gap: 20 }}>
+        
+        {/* Palette + Rationale */}
+        <div style={{ display: 'flex', gap: 20 }}>
+          <div style={{ ...card, flex: 1 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: d.fg3, marginBottom: 14 }}>Palette</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {d.swatches.map((s, i) => (
+                <div key={i} style={{ textAlign: 'center' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 6, background: s.color, border: '1px solid rgba(0,0,0,0.08)' }} />
+                  <div style={{ fontSize: 9, color: d.fg3, marginTop: 4 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ ...card, flex: 1 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: d.fg3, marginBottom: 14 }}>Why this works</div>
+            <p style={{ fontSize: 13, color: d.fg2, lineHeight: 1.6 }}>{d.rationale}</p>
+          </div>
+        </div>
+
+        {/* Typography */}
+        <div style={{ ...card }}>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: d.fg3, marginBottom: 16 }}>Typography</div>
+          <div style={{ display: 'flex', gap: 32 }}>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: d.display, fontSize: 28, fontWeight: d.displayWeight, letterSpacing: -0.3, marginBottom: 2, lineHeight: 1.2 }}>Display Heading</div>
+              <div style={{ fontSize: 10, color: d.fg3, marginBottom: 16 }}>{d.displayLabel}</div>
+              <div style={{ fontFamily: d.sans, fontSize: 18, fontWeight: 600, marginBottom: 2 }}>Section Heading</div>
+              <div style={{ fontFamily: d.sans, fontSize: 14, color: d.fg2, lineHeight: 1.6 }}>Body text — clear, legible, and balanced. Good typography induces better mood and improves creative task performance.</div>
+            </div>
+            <div style={{ width: 1, background: d.cardBorder }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: d.sans, fontSize: 14, fontWeight: 600, marginBottom: 8 }}>Type Scale (1.250)</div>
+              {[{s: 32, l: 'H1'}, {s: 24, l: 'H2'}, {s: 18, l: 'H3'}, {s: 14, l: 'Body'}, {s: 12, l: 'Small'}].map((t, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 6 }}>
+                  <span style={{ fontSize: 10, color: d.fg3, width: 36 }}>{t.l}</span>
+                  <span style={{ fontFamily: i < 2 ? d.display : d.sans, fontSize: t.s, fontWeight: i < 2 ? d.displayWeight : (i === 2 ? 600 : 400), lineHeight: 1.2, letterSpacing: i < 2 ? -0.3 : 0 }}>Aa</span>
+                  <span style={{ fontSize: 10, color: d.fg3 }}>{t.s}px</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Components */}
+        <div style={{ ...card }}>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: d.fg3, marginBottom: 16 }}>Components</div>
+          
+          {/* Buttons — Von Restorff: primary is the only saturated element */}
+          <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center' }}>
+            <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 600, padding: '10px 20px', background: d.accent, color: d.accentFg, border: 'none', borderRadius: d.radius, cursor: 'pointer', transition: 'all 150ms ease-out' }}>Primary Action</button>
+            <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 600, padding: '10px 20px', background: d.secondaryBtn, color: d.secondaryBtnFg, border: `1.5px solid ${d.secondaryBtnBorder}`, borderRadius: d.radius, cursor: 'pointer' }}>Secondary</button>
+            <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 500, padding: '10px 20px', background: d.ghostBtn, color: d.ghostBtnFg, border: 'none', borderRadius: d.radius, cursor: 'pointer' }}>Ghost</button>
+            <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 500, color: d.accent, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3 }}>Link</button>
+          </div>
+
+          {/* Input */}
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ fontSize: 13, fontWeight: 500, color: d.fg2, display: 'block', marginBottom: 6 }}>Email address</label>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <div style={{ flex: 1, padding: '10px 14px', borderRadius: d.radius, fontSize: 14, fontFamily: d.sans, border: `1.5px solid ${d.cardBorder}`, background: d.inputBg, color: d.fg3 }}>you@example.com</div>
+              <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 600, padding: '10px 20px', background: d.accent, color: d.accentFg, border: 'none', borderRadius: d.radius, cursor: 'pointer' }}>Subscribe</button>
+            </div>
+          </div>
+
+          {/* Cards — Gestalt Common Region */}
+          <div style={{ display: 'flex', gap: 12 }}>
+            {[
+              { title: 'Analytics', sub: 'Track performance metrics' },
+              { title: 'Reports', sub: 'Generate weekly summaries' },
+              { title: 'Settings', sub: 'Configure your workspace' },
+            ].map((item, i) => (
+              <div key={i} style={{
+                flex: 1, background: d.nestedCardBg, borderRadius: d.radius, padding: 16,
+                border: `1px solid ${d.cardBorder}`,
+              }}>
+                <div style={{ width: 36, height: 36, borderRadius: d.radius, background: d.iconBg, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 16, height: 16, borderRadius: '50%', background: d.iconFg }} />
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>{item.title}</div>
+                <div style={{ fontSize: 12, color: d.fg2, lineHeight: 1.5 }}>{item.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────
+   DIRECTION 1: Midnight Teal
+   Psychology: blue-green = trust + calm + growth
+   Strategy: Tinted neutrals (every gray has teal undertone)
+   Type: Sora (geometric, modern) + Crimson Pro (elegant contrast)
+──────────────────────────────────────────────── */
+const midnightTeal = {
+  tag: 'Trust · Calm · Growth',
+  name: 'Midnight Teal',
+  desc: 'Blue-green signals trust and competence. Tinted neutrals — no pure grays — create a cohesive, premium atmosphere. Sora\'s geometric precision pairs with Crimson Pro\'s editorial elegance.',
+  rationale: 'Blue is the #1 preferred color across genders (Hallock, 57% of men, 35% of women). Teal adds warmth without losing trust signals. Tinted neutrals eliminate visual dissonance between accent and background.',
+  display: '"Crimson Pro", serif', displayWeight: 400, displayLabel: 'Crimson Pro — editorial serif',
+  sans: '"Sora", sans-serif',
+  pageBg: 'oklch(0.965 0.012 195)',
+  heroBg: 'oklch(0.22 0.06 195)', heroFg: 'oklch(0.92 0.02 195)',
+  fg1: 'oklch(0.22 0.04 195)', fg2: 'oklch(0.48 0.03 195)', fg3: 'oklch(0.62 0.025 195)',
+  cardBg: '#fff', cardBorder: 'oklch(0.88 0.015 195)', cardShadow: '0 1px 4px oklch(0.5 0.02 195 / 0.08)',
+  accent: 'oklch(0.52 0.12 185)', accentFg: '#fff',
+  secondaryBtn: 'transparent', secondaryBtnFg: 'oklch(0.22 0.04 195)', secondaryBtnBorder: 'oklch(0.82 0.02 195)',
+  ghostBtn: 'oklch(0.94 0.015 195)', ghostBtnFg: 'oklch(0.35 0.03 195)',
+  inputBg: 'oklch(0.98 0.005 195)',
+  nestedCardBg: 'oklch(0.975 0.008 195)',
+  iconBg: 'oklch(0.92 0.03 185)', iconFg: 'oklch(0.48 0.1 185)',
+  radius: '6px',
+  strip: ['oklch(0.22 0.06 195)', 'oklch(0.35 0.05 195)', 'oklch(0.52 0.12 185)', 'oklch(0.7 0.08 185)', 'oklch(0.88 0.02 195)', 'oklch(0.96 0.01 195)', '#fff'],
+  swatches: [
+    { color: 'oklch(0.22 0.06 195)', label: 'Ink' },
+    { color: 'oklch(0.48 0.03 195)', label: 'Muted' },
+    { color: 'oklch(0.52 0.12 185)', label: 'Accent' },
+    { color: 'oklch(0.7 0.08 185)', label: 'Light' },
+    { color: 'oklch(0.88 0.015 195)', label: 'Border' },
+    { color: 'oklch(0.965 0.012 195)', label: 'Page' },
+    { color: 'oklch(0.55 0.14 25)', label: 'Danger' },
+    { color: 'oklch(0.6 0.12 85)', label: 'Warning' },
+  ],
+};
+
+/* ────────────────────────────────────────────────
+   DIRECTION 2: Copper & Slate
+   Psychology: warm metallic = premium + approachable
+   Strategy: Duotone — copper for actions, slate for structure
+   Type: Plus Jakarta Sans (friendly geometric) + Source Serif 4 (classic)
+──────────────────────────────────────────────── */
+const copperSlate = {
+  tag: 'Premium · Approachable · Warm',
+  name: 'Copper & Slate',
+  desc: 'Warm copper against cool slate creates visual tension that feels sophisticated. Duotone strategy gives each color a clear role: copper acts, slate structures.',
+  rationale: 'Orange/copper signals friendliness (Shopify, HubSpot) while slate provides gravitas. The warm-cool contrast maximizes pre-attentive pop — the accent differs in both hue AND temperature.',
+  display: '"Source Serif 4", serif', displayWeight: 400, displayLabel: 'Source Serif 4 — warm serif',
+  sans: '"Plus Jakarta Sans", sans-serif',
+  pageBg: '#f5f4f2',
+  heroBg: '#2a2d35', heroFg: '#e8e4de',
+  fg1: '#2a2d35', fg2: '#6b6e78', fg3: '#95979f',
+  cardBg: '#fff', cardBorder: '#e4e2dd', cardShadow: '0 1px 4px rgba(42,45,53,0.06)',
+  accent: '#b5713a', accentFg: '#fff',
+  secondaryBtn: 'transparent', secondaryBtnFg: '#2a2d35', secondaryBtnBorder: '#cccac5',
+  ghostBtn: '#eeece8', ghostBtnFg: '#4a4d55',
+  inputBg: '#fafaf8',
+  nestedCardBg: '#faf9f7',
+  iconBg: '#f0e6d8', iconFg: '#9a6530',
+  radius: '6px',
+  strip: ['#2a2d35', '#5a5d68', '#b5713a', '#d4a06a', '#f0e6d8', '#f5f4f2', '#fff'],
+  swatches: [
+    { color: '#2a2d35', label: 'Slate' },
+    { color: '#6b6e78', label: 'Muted' },
+    { color: '#b5713a', label: 'Copper' },
+    { color: '#d4a06a', label: 'Light' },
+    { color: '#e4e2dd', label: 'Border' },
+    { color: '#f5f4f2', label: 'Page' },
+    { color: '#c44a3f', label: 'Danger' },
+    { color: '#3d7a5a', label: 'Success' },
+  ],
+};
+
+/* ────────────────────────────────────────────────
+   DIRECTION 3: Graphite & Lime
+   Psychology: monochrome + single pop = maximum Von Restorff
+   Strategy: Contrast Pop — true grayscale + one electric color
+   Type: Bricolage Grotesque (distinctive) + Albert Sans (clean)
+──────────────────────────────────────────────── */
+const graphiteLime = {
+  tag: 'Sharp · Focused · High Contrast',
+  name: 'Graphite & Lime',
+  desc: 'Pure monochrome with a single electric lime accent. Maximum Von Restorff effect — the accent is impossible to miss because nothing else competes. Bricolage Grotesque adds character without color.',
+  rationale: 'When accent is the ONLY saturated element, pre-attentive processing finds it instantly (<200ms). Monochrome forces hierarchy through weight and size, not color — making the system extremely flexible for rebranding.',
+  display: '"Bricolage Grotesque", sans-serif', displayWeight: 600, displayLabel: 'Bricolage Grotesque — distinctive sans',
+  sans: '"Albert Sans", sans-serif',
+  pageBg: '#f3f3f3',
+  heroBg: '#1a1a1a', heroFg: '#e8e8e8',
+  fg1: '#1a1a1a', fg2: '#666', fg3: '#999',
+  cardBg: '#fff', cardBorder: '#e2e2e2', cardShadow: '0 1px 4px rgba(0,0,0,0.05)',
+  accent: '#6da818', accentFg: '#fff',
+  secondaryBtn: 'transparent', secondaryBtnFg: '#1a1a1a', secondaryBtnBorder: '#ccc',
+  ghostBtn: '#ebebeb', ghostBtnFg: '#444',
+  inputBg: '#fafafa',
+  nestedCardBg: '#f8f8f8',
+  iconBg: '#e8f2d8', iconFg: '#5a8a15',
+  radius: '6px',
+  strip: ['#1a1a1a', '#444', '#888', '#bbb', '#e2e2e2', '#f3f3f3', '#6da818'],
+  swatches: [
+    { color: '#1a1a1a', label: 'Black' },
+    { color: '#444', label: 'Dark' },
+    { color: '#888', label: 'Mid' },
+    { color: '#ccc', label: 'Light' },
+    { color: '#f3f3f3', label: 'Page' },
+    { color: '#6da818', label: 'Lime' },
+    { color: '#cc3333', label: 'Danger' },
+    { color: '#cc8800', label: 'Warning' },
+  ],
+};
+
+/* ────────────────────────────────────────────────
+   DIRECTION 4: Deep Violet
+   Psychology: purple = premium + creativity
+   Strategy: Analogous range — violet → plum → mauve
+   Type: Outfit (modern rounded) + Fraunces (quirky serif)
+──────────────────────────────────────────────── */
+const deepViolet = {
+  tag: 'Creative · Premium · Expressive',
+  name: 'Deep Violet',
+  desc: 'Rich violet with analogous plum and mauve. Three neighboring hues create depth without discord. Outfit\'s rounded geometry balances Fraunces\' quirky optical sizing.',
+  rationale: 'Purple signals premium and creativity (Twitch, Figma). Analogous colors maintain harmony while offering three distinct semantic roles: primary, info, and highlight. No hue clash.',
+  display: '"Fraunces", serif', displayWeight: 400, displayLabel: 'Fraunces — optical-size serif',
+  sans: '"Outfit", sans-serif',
+  pageBg: 'oklch(0.96 0.012 300)',
+  heroBg: 'oklch(0.22 0.08 295)', heroFg: 'oklch(0.92 0.02 295)',
+  fg1: 'oklch(0.2 0.05 295)', fg2: 'oklch(0.48 0.03 295)', fg3: 'oklch(0.62 0.025 295)',
+  cardBg: '#fff', cardBorder: 'oklch(0.88 0.018 300)', cardShadow: '0 1px 4px oklch(0.4 0.04 295 / 0.08)',
+  accent: 'oklch(0.5 0.2 295)', accentFg: '#fff',
+  secondaryBtn: 'transparent', secondaryBtnFg: 'oklch(0.2 0.05 295)', secondaryBtnBorder: 'oklch(0.82 0.02 295)',
+  ghostBtn: 'oklch(0.94 0.015 300)', ghostBtnFg: 'oklch(0.35 0.04 295)',
+  inputBg: 'oklch(0.98 0.006 300)',
+  nestedCardBg: 'oklch(0.975 0.01 300)',
+  iconBg: 'oklch(0.92 0.04 310)', iconFg: 'oklch(0.48 0.14 310)',
+  radius: '8px',
+  strip: ['oklch(0.22 0.08 295)', 'oklch(0.38 0.14 295)', 'oklch(0.5 0.2 295)', 'oklch(0.55 0.16 315)', 'oklch(0.7 0.08 325)', 'oklch(0.92 0.02 300)', '#fff'],
+  swatches: [
+    { color: 'oklch(0.22 0.08 295)', label: 'Deep' },
+    { color: 'oklch(0.48 0.03 295)', label: 'Muted' },
+    { color: 'oklch(0.5 0.2 295)', label: 'Violet' },
+    { color: 'oklch(0.55 0.16 315)', label: 'Plum' },
+    { color: 'oklch(0.7 0.08 325)', label: 'Mauve' },
+    { color: 'oklch(0.96 0.012 300)', label: 'Page' },
+    { color: 'oklch(0.55 0.18 25)', label: 'Danger' },
+    { color: 'oklch(0.55 0.14 155)', label: 'Success' },
+  ],
+};
+
+/* ────────────────────────────────────────────────
+   DIRECTION 5: Sage & Sand
+   Psychology: green = growth + calm; warm neutral = comfort
+   Strategy: Tinted neutrals (sage-tinted) with warm sand accents
+   Type: DM Sans (workhorse) + Source Serif 4
+──────────────────────────────────────────────── */
+const sageSand = {
+  tag: 'Natural · Balanced · Calm',
+  name: 'Sage & Sand',
+  desc: 'Muted sage green with sandy warm neutrals. Every surface carries a subtle botanical tint. DM Sans is the reliable workhorse; Source Serif 4 adds editorial weight for display.',
+  rationale: 'Green signals growth and balance (Robinhood, Spotify). Unlike bright green, sage reads as calm and mature. Sand-tinted neutrals add warmth without competing with the accent.',
+  display: '"Source Serif 4", serif', displayWeight: 400, displayLabel: 'Source Serif 4 — editorial serif',
+  sans: '"DM Sans", sans-serif',
+  pageBg: '#f4f3ef',
+  heroBg: '#2c3028', heroFg: '#e2e0d6',
+  fg1: '#2c3028', fg2: '#5e6458', fg3: '#8a8e82',
+  cardBg: '#fdfcf8', cardBorder: '#dddbd2', cardShadow: '0 1px 4px rgba(44,48,40,0.06)',
+  accent: '#5a7a52', accentFg: '#fff',
+  secondaryBtn: 'transparent', secondaryBtnFg: '#2c3028', secondaryBtnBorder: '#c8c6bc',
+  ghostBtn: '#eae8e0', ghostBtnFg: '#464a42',
+  inputBg: '#f9f8f4',
+  nestedCardBg: '#f7f6f2',
+  iconBg: '#e4e8da', iconFg: '#4a6a42',
+  radius: '6px',
+  strip: ['#2c3028', '#5e6458', '#5a7a52', '#8aaa78', '#d5dcc8', '#f4f3ef', '#fdfcf8'],
+  swatches: [
+    { color: '#2c3028', label: 'Ink' },
+    { color: '#5e6458', label: 'Muted' },
+    { color: '#5a7a52', label: 'Sage' },
+    { color: '#c8a868', label: 'Sand' },
+    { color: '#dddbd2', label: 'Border' },
+    { color: '#f4f3ef', label: 'Page' },
+    { color: '#b84a40', label: 'Danger' },
+    { color: '#c48a20', label: 'Warning' },
+  ],
+};
+
+/* ────────────────────────────────────────────────
+   DIRECTION 6: Obsidian & Ember
+   Psychology: dark-first = focus + immersion
+   Strategy: Dark-forward with warm ember accent
+   Type: Sora (geometric) + Crimson Pro (editorial)
+──────────────────────────────────────────────── */
+const obsidianEmber = {
+  tag: 'Immersive · Focused · Bold',
+  name: 'Obsidian & Ember',
+  desc: 'Dark is the identity, not an afterthought. Warm ember cuts through a neutral charcoal palette — not the typical cold-dark-with-blue.',
+  rationale: 'Dark-first suits developer tools, creative software, and media apps. Using warm charcoal (#1c1a18) instead of cold (#111118) and a warm accent avoids the generic "dark mode" feel.',
+  display: '"Crimson Pro", serif', displayWeight: 400, displayLabel: 'Crimson Pro — editorial serif',
+  sans: '"Sora", sans-serif',
+  pageBg: '#141210',
+  heroBg: '#0c0a08', heroFg: '#e8e2d8',
+  fg1: '#e8e4dc', fg2: '#9a958a', fg3: '#6a665e',
+  cardBg: '#1e1c18', cardBorder: '#2e2a24', cardShadow: '0 1px 4px rgba(0,0,0,0.2)',
+  accent: '#d87a3a', accentFg: '#141210',
+  secondaryBtn: 'transparent', secondaryBtnFg: '#e8e4dc', secondaryBtnBorder: '#3a362e',
+  ghostBtn: '#282420', ghostBtnFg: '#b0aa9e',
+  inputBg: '#1a1816',
+  nestedCardBg: '#242018',
+  iconBg: '#2e2820', iconFg: '#d87a3a',
+  radius: '6px',
+  strip: ['#0c0a08', '#1e1c18', '#3a362e', '#6a665e', '#d87a3a', '#e8a868', '#f0d0a8'],
+  swatches: [
+    { color: '#0c0a08', label: 'Void' },
+    { color: '#1e1c18', label: 'Surface' },
+    { color: '#3a362e', label: 'Border' },
+    { color: '#e8e4dc', label: 'Text' },
+    { color: '#d87a3a', label: 'Ember' },
+    { color: '#e8a868', label: 'Glow' },
+    { color: '#cc4444', label: 'Danger' },
+    { color: '#5aaa6a', label: 'Success' },
+  ],
+};
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection title="Research-Informed Directions" subtitle="Each uses a different color psychology, palette strategy, and type pairing. All follow the 60-30-10 rule.">
+        <DCArtboard label="1 · Midnight Teal — Trust + Tinted Neutrals" width={640} height={860}>
+          <DirectionPage d={midnightTeal} />
+        </DCArtboard>
+        <DCArtboard label="2 · Copper & Slate — Warm-Cool Duotone" width={640} height={860}>
+          <DirectionPage d={copperSlate} />
+        </DCArtboard>
+        <DCArtboard label="3 · Graphite & Lime — Contrast Pop" width={640} height={860}>
+          <DirectionPage d={graphiteLime} />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection title="More Directions" subtitle="Violet analogous, sage tinted, and dark-forward.">
+        <DCArtboard label="4 · Deep Violet — Analogous Range" width={640} height={860}>
+          <DirectionPage d={deepViolet} />
+        </DCArtboard>
+        <DCArtboard label="5 · Sage & Sand — Natural Tinted" width={640} height={860}>
+          <DirectionPage d={sageSand} />
+        </DCArtboard>
+        <DCArtboard label="6 · Obsidian & Ember — Dark-Forward" width={640} height={860}>
+          <DirectionPage d={obsidianEmber} />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

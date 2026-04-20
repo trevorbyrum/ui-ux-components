@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tokens.jsx"></script>
+<script type="text/babel" src="components.jsx"></script>
+<script type="text/babel" src="components-extra.jsx"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: auto; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+const { useState, useMemo, useEffect } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "hue": 54,
+  "mode": "dark"
+}/*EDITMODE-END*/;
+
+function App() {
+  const [hue, setHue] = useState(TWEAK_DEFAULTS.hue);
+  const [mode, setMode] = useState(TWEAK_DEFAULTS.mode);
+  const [tweaksVisible, setTweaksVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const [toggleState, setToggleState] = useState(true);
+  const [segActive, setSegActive] = useState(1);
+  const [checks, setChecks] = useState({ a: true, b: false, c: true });
+  const [radio, setRadio] = useState(0);
+
+  const t = useMemo(() => buildTheme(hue, mode), [hue, mode]);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setTweaksVisible(true);
+      if (e.data?.type === '__deactivate_edit_mode') setTweaksVisible(false);
+    };
+    window.addEventListener('message', handler);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  useEffect(() => {
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { hue, mode } }, '*');
+  }, [hue, mode]);
+
+  const Section = ({ title, children }) => (
+    <div style={{ marginBottom: 40 }}>
+      <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: 'uppercase', color: t.accentText, marginBottom: 16 }}>{title}</div>
+      {children}
+    </div>
+  );
+
+  return (
+    <div style={{ fontFamily: t.font, background: t.pageBg, color: t.fg1, minHeight: '100vh', padding: '40px 48px', transition: 'background 200ms, color 200ms' }}>
+
+      {/* Header */}
+      <div style={{ marginBottom: 48 }}>
+        <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: t.fg3, marginBottom: 8, fontVariantNumeric: 'tabular-nums' }}>
+          HUE {hue}° · {mode.toUpperCase()} · OKLCH
+        </div>
+        <div style={{ fontSize: 28, fontWeight: 600, letterSpacing: -0.8, marginBottom: 6 }}>Design System</div>
+        <div style={{ fontSize: 14, color: t.fg2, lineHeight: 1.6, maxWidth: 520 }}>
+          Dark-first. One accent hue. Tinted neutrals. All decisions finalized.
+          Toggle Tweaks to shift hue and mode.
+        </div>
+      </div>
+
+      {/* Scales */}
+      <Section title="Accent Scale">
+        <div style={{ display: 'flex', gap: 2, borderRadius: t.radius, overflow: 'hidden', marginBottom: 6 }}>
+          {Object.entries(t.accent).map(([step, val]) => (
+            <div key={step} style={{ flex: 1, height: 40, background: val, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', padding: 4, border: step === '9' ? '2px solid white' : 'none' }}>
+              <span style={{ fontSize: 9, fontWeight: 500, color: parseInt(step) >= 8 ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.5)' }}>{step}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 11, color: t.fg3 }}>1–2 bg · 3–5 component bg · 6–8 borders/fills · 9 accent · 10 pressed · 11–12 text</div>
+      </Section>
+
+      <Section title="Neutral Scale">
+        <div style={{ display: 'flex', gap: 2, borderRadius: t.radius, overflow: 'hidden' }}>
+          {Object.entries(t.neutral).map(([step, val]) => (
+            <div key={step} style={{ flex: 1, height: 28, background: val, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', padding: 3 }}>
+              <span style={{ fontSize: 8, fontWeight: 500, color: parseInt(step) >= 9 ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)' }}>{step}</span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Buttons — raised, 5px radius */}
+      <Section title="Buttons">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <Button variant="primary" theme={t}>Primary</Button>
+            <Button variant="accent" theme={t}>Accent</Button>
+            <Button variant="secondary" theme={t}>Secondary</Button>
+            <Button variant="ghost" theme={t}>Ghost</Button>
+            <Button variant="link" theme={t}>Link</Button>
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <Button variant="primary" size="sm" theme={t}>Small</Button>
+            <Button variant="primary" size="md" theme={t}>Medium</Button>
+            <Button variant="primary" size="lg" theme={t}>Large</Button>
+          </div>
+        </div>
+      </Section>
+
+      {/* Inputs & Forms */}
+      <Section title="Inputs & Forms">
+        <div style={{ display: 'flex', gap: 16, maxWidth: 560 }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <Input label="Full name" placeholder="Jane Doe" theme={t} />
+            <Input label="Email" placeholder="jane@company.com" type="email" theme={t} />
+            <Select label="Role" options={['Engineer', 'Designer', 'Product', 'Other']} theme={t} />
+          </div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <Textarea label="Description" placeholder="Enter a description..." theme={t} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0' }}>
+              <span style={{ fontSize: 13, color: t.fg2 }}>Notifications</span>
+              <Toggle checked={toggleState} onChange={setToggleState} theme={t} />
+            </div>
+            <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
+              <Button variant="accent" theme={t}>Save</Button>
+              <Button variant="secondary" theme={t}>Cancel</Button>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Checkbox & Radio */}
+      <Section title="Checkbox & Radio">
+        <div style={{ display: 'flex', gap: 48 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Checkbox checked={checks.a} onChange={(v) => setChecks({...checks, a: v})} label="Enable analytics" theme={t} />
+            <Checkbox checked={checks.b} onChange={(v) => setChecks({...checks, b: v})} label="Send notifications" theme={t} />
+            <Checkbox checked={checks.c} onChange={(v) => setChecks({...checks, c: v})} label="Dark mode" theme={t} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {['Startup', 'Growth', 'Enterprise'].map((opt, i) => (
+              <Radio key={i} checked={radio === i} onChange={() => setRadio(i)} label={opt} theme={t} />
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Badges */}
+      <Section title="Badges">
+        <div style={{ display: 'flex', gap: 6 }}>
+          <Badge theme={t}>Default</Badge>
+          <Badge variant="accent" theme={t}>Accent</Badge>
+        </div>
+      </Section>
+
+      {/* Tabs & Segmented */}
+      <Section title="Tabs & Segmented">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 400 }}>
+          <Tabs items={['Overview', 'Activity', 'Settings']} active={activeTab} onChange={setActiveTab} theme={t} />
+          <Segmented items={['7d', '30d', '90d', 'All']} active={segActive} onChange={setSegActive} theme={t} />
+        </div>
+      </Section>
+
+      {/* Stats */}
+      <Section title="Stat Cards">
+        <div style={{ display: 'flex', gap: 12, maxWidth: 560 }}>
+          {[{ l: 'Revenue', v: '$48.2k', s: '+12%' }, { l: 'Users', v: '3,291', s: '+8%' }, { l: 'Requests', v: '1.2M' }].map((item, i) => (
+            <Card key={i} theme={t} raised padding={16}>
+              <Stat label={item.l} value={item.v} sub={item.s} theme={t} />
+            </Card>
+          ))}
+        </div>
+      </Section>
+
+      {/* Table */}
+      <Section title="Table">
+        <div style={{ maxWidth: 560 }}>
+          <Table
+            columns={[{ label: 'Name', flex: 2 }, { label: 'Role' }, { label: 'Status' }, { label: 'Active' }]}
+            rows={[
+              ['Jane Cooper', 'Engineer', 'Active', '2m ago'],
+              ['Alex Chen', 'Designer', 'Away', '1h ago'],
+              ['Maria Garcia', 'Product', 'Active', 'Now'],
+            ]}
+            theme={t}
+          />
+        </div>
+      </Section>
+
+      {/* Sidebar */}
+      <Section title="Sidebar / List">
+        <Card theme={t} padding={8}>
+          <div style={{ width: 180, display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 1, color: t.fg3, padding: '6px 10px 4px', textTransform: 'uppercase' }}>Workspace</div>
+            {['Overview', 'Projects', 'Members', 'Settings'].map((item, i) => (
+              <ListItem key={i} active={i === 0} theme={t}>{item}</ListItem>
+            ))}
+          </div>
+        </Card>
+      </Section>
+
+      {/* Navigation — underline active */}
+      <Section title="Navigation">
+        <div style={{ maxWidth: 560 }}>
+          <Card theme={t} padding="10px 16px">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+              <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: -0.3 }}>acme</span>
+              <div style={{ display: 'flex', gap: 16, flex: 1 }}>
+                {['Products', 'Pricing', 'Docs'].map((item, i) => (
+                  <span key={i} style={{
+                    fontSize: 13, cursor: 'pointer',
+                    color: i === 0 ? t.fg1 : t.fg3,
+                    fontWeight: i === 0 ? 500 : 400,
+                    borderBottom: i === 0 ? `2px solid ${t.accentSolid}` : '2px solid transparent',
+                    paddingBottom: 2,
+                  }}>{item}</span>
+                ))}
+              </div>
+              <Button variant="accent" size="sm" theme={t}>Get started</Button>
+            </div>
+          </Card>
+        </div>
+      </Section>
+
+      {/* Breadcrumbs */}
+      <Section title="Breadcrumbs">
+        <Breadcrumbs items={['Home', 'Projects', 'Acme Inc', 'Settings']} theme={t} />
+      </Section>
+
+      {/* Pagination */}
+      <Section title="Pagination">
+        <Pagination current={3} total={7} theme={t} />
+      </Section>
+
+      {/* Dropdown */}
+      <Section title="Dropdown Menu">
+        <DropdownMenu theme={t} items={[
+          { label: 'Edit' },
+          { label: 'Duplicate' },
+          { label: 'Move to...' },
+          '-',
+          { label: 'Delete', danger: true },
+        ]} />
+      </Section>
+
+      {/* Tooltip */}
+      <Section title="Tooltip">
+        <div style={{ display: 'flex', gap: 24, paddingTop: 28, paddingBottom: 8 }}>
+          <Tooltip text="White tooltip" variant="dark" theme={t}>
+            <Button variant="secondary" size="sm" theme={t}>Dark tooltip</Button>
+          </Tooltip>
+          <Tooltip text="Accent tooltip" variant="accent" theme={t}>
+            <Button variant="secondary" size="sm" theme={t}>Accent tooltip</Button>
+          </Tooltip>
+        </div>
+      </Section>
+
+      {/* Modal */}
+      <Section title="Modal">
+        <Modal title="New project" theme={t}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <Input label="Name" placeholder="My project" theme={t} />
+            <Select label="Visibility" options={['Public', 'Private']} theme={t} />
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 4 }}>
+              <Button variant="secondary" theme={t}>Cancel</Button>
+              <Button variant="accent" theme={t}>Create</Button>
+            </div>
+          </div>
+        </Modal>
+      </Section>
+
+      {/* Toast */}
+      <Section title="Toast / Notification">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <Toast message="Deployment successful" type="success" theme={t} />
+          <Toast message="API rate limit approaching" type="info" theme={t} />
+          <Toast message="Build failed — check logs" type="error" theme={t} />
+        </div>
+      </Section>
+
+      {/* Alert */}
+      <Section title="Alert / Banner">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxWidth: 480 }}>
+          <Alert message="New version available — update now." type="info" theme={t} />
+          <Alert message="Changes saved successfully." type="success" theme={t} />
+          <Alert message="Unable to connect to server." type="error" theme={t} />
+        </div>
+      </Section>
+
+      {/* Progress */}
+      <Section title="Progress Bar">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 320 }}>
+          <Progress value={35} theme={t} />
+          <Progress value={70} theme={t} />
+          <Progress value={100} theme={t} />
+        </div>
+      </Section>
+
+      {/* Spinner */}
+      <Section title="Spinner">
+        <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+          <Spinner variant="blackhole" size={24} theme={t} />
+        </div>
+      </Section>
+
+      {/* Skeleton */}
+      <Section title="Skeleton Loader">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxWidth: 240 }}>
+          <Skeleton width={120} height={14} theme={t} />
+          <Skeleton width="100%" height={10} theme={t} />
+          <Skeleton width="80%" height={10} theme={t} />
+          <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+            <Skeleton width={32} height={32} radius="50%" theme={t} />
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, justifyContent: 'center' }}>
+              <Skeleton width="60%" height={10} theme={t} />
+              <Skeleton width="40%" height={8} theme={t} />
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Tweaks */}
+      {tweaksVisible && (
+        <div style={{
+          position: 'fixed', bottom: 16, right: 16, width: 240,
+          background: t.raisedBg, border: `1px solid ${t.border}`, borderRadius: t.radiusLg,
+          padding: 16, fontFamily: t.font, zIndex: 999,
+          boxShadow: t.mode === 'dark' ? '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)' : '0 8px 32px rgba(0,0,0,0.12)',
+        }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: t.fg1, marginBottom: 12 }}>Tweaks</div>
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 11, color: t.fg3, marginBottom: 4 }}>Hue: {hue}°</div>
+            <input type="range" min="0" max="360" step="1" value={hue}
+              onChange={(e) => setHue(parseInt(e.target.value))}
+              style={{ width: '100%', accentColor: t.accentSolid }} />
+            <div style={{ display: 'flex', gap: 4, marginTop: 8, flexWrap: 'wrap' }}>
+              {[
+                { label: 'Blue', h: 265 }, { label: 'Purple', h: 300 }, { label: 'Green', h: 150 },
+                { label: 'Orange', h: 54 }, { label: 'Red', h: 15 }, { label: 'Cyan', h: 200 },
+              ].map((p) => (
+                <div key={p.h} onClick={() => setHue(p.h)} style={{
+                  padding: '3px 8px', fontSize: 10, borderRadius: t.radius, cursor: 'pointer',
+                  background: hue === p.h ? t.accentSubtle : t.subtleBg,
+                  color: hue === p.h ? t.accentText : t.fg3,
+                  border: `1px solid ${hue === p.h ? t.accentSolid : t.border}`, fontWeight: 500,
+                }}>{p.label}</div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: 11, color: t.fg3, marginBottom: 4 }}>Mode</div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {['dark', 'light'].map((m) => (
+                <div key={m} onClick={() => setMode(m)} style={{
+                  flex: 1, padding: '5px 0', textAlign: 'center', fontSize: 12, borderRadius: t.radius, cursor: 'pointer',
+                  background: mode === m ? t.accentSubtle : 'transparent',
+                  color: mode === m ? t.accentText : t.fg3,
+                  fontWeight: mode === m ? 500 : 400,
+                  border: `1px solid ${mode === m ? t.accentSolid : t.border}`,
+                }}>{m}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

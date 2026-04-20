@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finalists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..700;1,300..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Sora:wght@300..700&family=Crimson+Pro:ital,wght@0,300..700;1,300..700&family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=Albert+Sans:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+/* ── Shared mini-UI renderer ── */
+function MiniUI({ d }) {
+  const card = { background: d.cardBg, borderRadius: 6, padding: 20, border: `1px solid ${d.border}`, boxShadow: d.shadow };
+  return (
+    <div style={{ width: 480, fontFamily: d.sans, color: d.fg1, background: d.pageBg, borderRadius: 2, overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{ background: d.heroBg, color: d.heroFg, padding: '24px 28px 20px' }}>
+        <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase', opacity: 0.5, marginBottom: 8 }}>{d.tag}</div>
+        <div style={{ fontFamily: d.display, fontSize: 24, fontWeight: d.dw || 400, letterSpacing: -0.3, marginBottom: 4 }}>{d.name}</div>
+        <div style={{ fontSize: 12, opacity: 0.7, lineHeight: 1.5 }}>{d.desc}</div>
+      </div>
+      <div style={{ display: 'flex', height: 5 }}>
+        {d.strip.map((c, i) => <div key={i} style={{ flex: 1, background: c }} />)}
+      </div>
+      <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {/* Buttons */}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 600, padding: '8px 18px', background: d.accent, color: d.accentFg, border: 'none', borderRadius: 6, cursor: 'pointer' }}>Primary</button>
+          <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 600, padding: '8px 18px', background: 'transparent', color: d.fg1, border: `1.5px solid ${d.border}`, borderRadius: 6, cursor: 'pointer' }}>Secondary</button>
+          <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 500, padding: '8px 18px', background: d.ghostBg, color: d.fg2, border: 'none', borderRadius: 6, cursor: 'pointer' }}>Ghost</button>
+        </div>
+        {/* Input + button */}
+        <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ flex: 1, padding: '9px 12px', borderRadius: 6, fontSize: 13, fontFamily: d.sans, border: `1.5px solid ${d.border}`, background: d.inputBg, color: d.fg3 }}>you@example.com</div>
+          <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 600, padding: '8px 16px', background: d.accent, color: d.accentFg, border: 'none', borderRadius: 6, cursor: 'pointer' }}>Send</button>
+        </div>
+        {/* Card row */}
+        <div style={{ display: 'flex', gap: 10 }}>
+          {['Analytics', 'Reports', 'Settings'].map((t, i) => (
+            <div key={i} style={{ flex: 1, ...card, padding: 14 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 6, background: d.iconBg, marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 14, height: 14, borderRadius: '50%', background: d.iconFg }} />
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{t}</div>
+              <div style={{ fontSize: 11, color: d.fg2, lineHeight: 1.4 }}>Description text</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════
+   FINALIST 1: Copper & Slate
+═══════════════════════════════════════════════ */
+const copperLight = {
+  tag: 'Finalist 1 · Light', name: 'Copper & Slate', desc: 'Warm copper acts, cool slate structures.',
+  sans: '"Plus Jakarta Sans", sans-serif', display: '"Source Serif 4", serif',
+  pageBg: '#f5f4f2', heroBg: '#2a2d35', heroFg: '#e8e4de',
+  fg1: '#2a2d35', fg2: '#6b6e78', fg3: '#95979f',
+  cardBg: '#fff', border: '#e4e2dd', shadow: '0 1px 4px rgba(42,45,53,0.06)',
+  accent: '#b5713a', accentFg: '#fff',
+  ghostBg: '#eeece8', inputBg: '#fafaf8',
+  iconBg: '#f0e6d8', iconFg: '#9a6530',
+  strip: ['#2a2d35', '#5a5d68', '#b5713a', '#d4a06a', '#f0e6d8', '#f5f4f2', '#fff'],
+};
+const copperDark = {
+  tag: 'Finalist 1 · Dark', name: 'Copper & Slate', desc: 'Dark mode — warm charcoal, copper persists.',
+  sans: '"Plus Jakarta Sans", sans-serif', display: '"Source Serif 4", serif',
+  pageBg: '#161514', heroBg: '#0e0d0c', heroFg: '#e0dcd4',
+  fg1: '#e0dcd4', fg2: '#948f86', fg3: '#6a665e',
+  cardBg: '#1e1d1a', border: '#302e28', shadow: '0 1px 4px rgba(0,0,0,0.2)',
+  accent: '#c8843e', accentFg: '#141210',
+  ghostBg: '#282624', inputBg: '#1a1918',
+  iconBg: '#2e2820', iconFg: '#c8843e',
+  strip: ['#0e0d0c', '#1e1d1a', '#c8843e', '#daa868', '#302e28', '#161514', '#1e1d1a'],
+};
+
+/* ═══════════════════════════════════════════════
+   FINALIST 2: Graphite + Pop — 4 color options
+═══════════════════════════════════════════════ */
+const makeGraphite = (popName, popColor, popSoft, popMuted) => ({
+  tag: `Graphite + ${popName}`, name: `Graphite & ${popName}`, desc: `Monochrome + ${popName.toLowerCase()} pop.`,
+  sans: '"Albert Sans", sans-serif', display: '"Bricolage Grotesque", sans-serif', dw: 600,
+  pageBg: '#f3f3f3', heroBg: '#1a1a1a', heroFg: '#e8e8e8',
+  fg1: '#1a1a1a', fg2: '#666', fg3: '#999',
+  cardBg: '#fff', border: '#e2e2e2', shadow: '0 1px 4px rgba(0,0,0,0.05)',
+  accent: popColor, accentFg: '#fff',
+  ghostBg: '#ebebeb', inputBg: '#fafafa',
+  iconBg: popSoft, iconFg: popMuted,
+  strip: ['#1a1a1a', '#444', '#888', '#bbb', '#e2e2e2', '#f3f3f3', popColor],
+});
+
+const graphiteAmber = makeGraphite('Amber', '#c88a20', '#f5ead0', '#a07018');
+const graphiteCoral = makeGraphite('Coral', '#d06050', '#f8ddd8', '#b04840');
+const graphiteSky = makeGraphite('Sky', '#2a8ab8', '#d4eaf5', '#1e6a90');
+const graphiteMint = makeGraphite('Mint', '#2a9a6a', '#d0f0e0', '#1e7a52');
+
+/* ═══════════════════════════════════════════════
+   FINALIST 3: Obsidian & Ember
+═══════════════════════════════════════════════ */
+const obsidianMain = {
+  tag: 'Finalist 3 · Primary', name: 'Obsidian & Ember', desc: 'Dark-forward. Warm charcoal + ember accent.',
+  sans: '"Sora", sans-serif', display: '"Crimson Pro", serif',
+  pageBg: '#141210', heroBg: '#0c0a08', heroFg: '#e8e2d8',
+  fg1: '#e8e4dc', fg2: '#9a958a', fg3: '#6a665e',
+  cardBg: '#1e1c18', border: '#2e2a24', shadow: '0 1px 4px rgba(0,0,0,0.2)',
+  accent: '#d87a3a', accentFg: '#141210',
+  ghostBg: '#282420', inputBg: '#1a1816',
+  iconBg: '#2e2820', iconFg: '#d87a3a',
+  strip: ['#0c0a08', '#1e1c18', '#3a362e', '#6a665e', '#d87a3a', '#e8a868', '#f0d0a8'],
+};
+const obsidianLight = {
+  tag: 'Finalist 3 · Light Alt', name: 'Obsidian & Ember', desc: 'Light counterpart — ember stays, warm stone surfaces.',
+  sans: '"Sora", sans-serif', display: '"Crimson Pro", serif',
+  pageBg: '#f6f4f0', heroBg: '#2a2620', heroFg: '#e8e2d8',
+  fg1: '#2a2620', fg2: '#6a6458', fg3: '#9a948a',
+  cardBg: '#fff', border: '#e4e0d8', shadow: '0 1px 4px rgba(42,38,32,0.06)',
+  accent: '#c86e30', accentFg: '#fff',
+  ghostBg: '#eee8e0', inputBg: '#faf8f4',
+  iconBg: '#f0e4d4', iconFg: '#a86028',
+  strip: ['#2a2620', '#5a5448', '#c86e30', '#daa060', '#f0e4d4', '#f6f4f0', '#fff'],
+};
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection title="Finalist 1 — Copper & Slate" subtitle="Warm-cool duotone. Light and dark modes.">
+        <DCArtboard label="Light" width={480} height={490}>
+          <MiniUI d={copperLight} />
+        </DCArtboard>
+        <DCArtboard label="Dark" width={480} height={490}>
+          <MiniUI d={copperDark} />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection title="Finalist 2 — Graphite + ?" subtitle="Same monochrome base, four different pop colors. Which one?">
+        <DCArtboard label="Amber" width={480} height={490}>
+          <MiniUI d={graphiteAmber} />
+        </DCArtboard>
+        <DCArtboard label="Coral" width={480} height={490}>
+          <MiniUI d={graphiteCoral} />
+        </DCArtboard>
+        <DCArtboard label="Sky" width={480} height={490}>
+          <MiniUI d={graphiteSky} />
+        </DCArtboard>
+        <DCArtboard label="Mint" width={480} height={490}>
+          <MiniUI d={graphiteMint} />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection title="Finalist 3 — Obsidian & Ember" subtitle="Dark-forward identity with a warm light-mode counterpart.">
+        <DCArtboard label="Dark (Primary)" width={480} height={490}>
+          <MiniUI d={obsidianMain} />
+        </DCArtboard>
+        <DCArtboard label="Light Counterpart" width={480} height={490}>
+          <MiniUI d={obsidianLight} />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

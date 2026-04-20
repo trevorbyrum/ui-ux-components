@@ -1,0 +1,26 @@
+{
+  "name": "ui-ux-components",
+  "version": "0.1.0",
+  "description": "Design-token-driven React component kit (OKLCH, dark-first, single-accent) with design exploration docs and UI/UX research.",
+  "private": true,
+  "license": "MIT",
+  "author": "Trevor Byrum <trevorbyrum1108@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trevorbyrum/ui-ux-components.git"
+  },
+  "keywords": [
+    "ui",
+    "ux",
+    "design-system",
+    "components",
+    "react",
+    "oklch",
+    "design-tokens"
+  ],
+  "files": [
+    "src",
+    "docs",
+    "research"
+  ]
+}

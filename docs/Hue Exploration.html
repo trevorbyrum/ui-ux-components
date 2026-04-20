@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hue Exploration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+const font = '"Inter", -apple-system, sans-serif';
+const R = 3;
+
+/*
+  COLOR THEORY APPROACH:
+  
+  Using oklch for perceptual uniformity.
+  
+  1. PRIMARY ACCENT: User picks one hue (h). Fixed lightness (0.65) and chroma (0.18) for vivid but not neon.
+  2. SEMANTIC COLORS are derived from the primary hue using color relationships:
+     - Success: primary hue + 120° (triadic) — lands in green zone
+     - Error: primary hue + 180° (complementary) — if primary is blue, error is warm/red
+     - Warning: primary hue + 150° (split-complementary warm side)
+     - Info: primary hue - 30° (analogous)
+  3. Each semantic color gets same lightness/chroma for visual consistency.
+  
+  This means: pick ONE hue, get a harmonious full system for free.
+*/
+
+function deriveSemantics(hue) {
+  const h = hue;
+  const l = 0.65, c = 0.18;
+  // Ensure success is always greenish (120-160), error is always reddish (15-40),
+  // warning is always warm (60-90). If triadic doesn't land there, adjust.
+  
+  // For the hue range the user likes (160-270), let's use fixed semantic hues
+  // but shift them to be harmonious with the primary.
+  // Success: green (hue 155)
+  // Error: red (hue 25)  
+  // Warning: amber (hue 75)
+  // Info: derived as analogous (primary - 30)
+  
+  // The trick is: keep success/error/warning at fixed hue zones for usability,
+  // but match their lightness and chroma to the primary for visual cohesion.
+  return {
+    primary: `oklch(${l} ${c} ${h})`,
+    primarySoft: `oklch(0.92 0.04 ${h})`,
+    primaryMuted: `oklch(0.45 0.12 ${h})`,
+    info: `oklch(${l} ${c * 0.8} ${(h - 30 + 360) % 360})`,
+    success: `oklch(0.62 0.16 155)`,
+    successSoft: `oklch(0.92 0.04 155)`,
+    error: `oklch(0.62 0.18 25)`,
+    errorSoft: `oklch(0.92 0.04 25)`,
+    warning: `oklch(0.72 0.14 80)`,
+    warningSoft: `oklch(0.94 0.04 80)`,
+  };
+}
+
+function HueCard({ hue, name, desc }) {
+  const sem = deriveSemantics(hue);
+  
+  return (
+    <div style={{ width: 380, fontFamily: font, color: '#e0e0ee', background: '#0c0c12', borderRadius: 2, overflow: 'hidden', fontSize: 13 }}>
+      {/* Hue header */}
+      <div style={{ padding: '20px 24px 16px' }}>
+        <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 1.5, color: '#5a5a6e', marginBottom: 6, fontVariantNumeric: 'tabular-nums' }}>HUE {hue}°</div>
+        <div style={{ fontSize: 17, fontWeight: 600, letterSpacing: -0.3, marginBottom: 4 }}>{name}</div>
+        <div style={{ fontSize: 12, color: '#5a5a6e', lineHeight: 1.5 }}>{desc}</div>
+      </div>
+
+      <div style={{ padding: '0 24px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        
+        {/* Primary accent scale */}
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 1, color: '#5a5a6e', marginBottom: 8 }}>PRIMARY SCALE</div>
+          <div style={{ display: 'flex', gap: 3 }}>
+            {[0.3, 0.4, 0.5, 0.6, 0.65, 0.7, 0.8, 0.9].map((l, i) => (
+              <div key={i} style={{ flex: 1, height: 28, borderRadius: R, background: `oklch(${l} ${l > 0.8 ? 0.06 : 0.18} ${hue})` }} />
+            ))}
+          </div>
+        </div>
+
+        {/* Derived semantic colors */}
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 1, color: '#5a5a6e', marginBottom: 8 }}>DERIVED SEMANTICS</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {[
+              { label: 'Primary', color: sem.primary },
+              { label: 'Info', color: sem.info },
+              { label: 'Success', color: sem.success },
+              { label: 'Warning', color: sem.warning },
+              { label: 'Error', color: sem.error },
+            ].map((s, i) => (
+              <div key={i} style={{ flex: 1, textAlign: 'center' }}>
+                <div style={{ height: 28, borderRadius: R, background: s.color, marginBottom: 4 }} />
+                <div style={{ fontSize: 9, color: '#5a5a6e' }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Buttons using this accent */}
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '7px 14px', background: '#e0e0ee', color: '#0a0a0f', border: 'none', borderRadius: R, cursor: 'pointer' }}>Primary</button>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '7px 14px', background: sem.primary, color: '#fff', border: 'none', borderRadius: R, cursor: 'pointer' }}>Accent</button>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '7px 14px', background: 'transparent', color: '#e0e0ee', border: '1px solid #1e1e2a', borderRadius: R, cursor: 'pointer' }}>Secondary</button>
+        </div>
+
+        {/* Badges */}
+        <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: sem.primarySoft, color: sem.primaryMuted }}>Feature</span>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: sem.successSoft, color: sem.success }}>Active</span>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: sem.warningSoft, color: sem.warning }}>Warning</span>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: sem.errorSoft, color: sem.error }}>Error</span>
+        </div>
+
+        {/* List with accent */}
+        <div style={{ border: '1px solid #1e1e2a', borderRadius: R, overflow: 'hidden' }}>
+          {['Dashboard', 'Analytics', 'Settings'].map((item, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '8px 12px', background: '#111118',
+              borderBottom: i < 2 ? '1px solid #1e1e2a' : 'none',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 6, height: 6, borderRadius: 2, background: i === 0 ? sem.primary : '#5a5a6e' }} />
+                <span style={{ fontSize: 12, fontWeight: 500 }}>{item}</span>
+              </div>
+              <span style={{ fontSize: 11, color: sem.primary, fontWeight: 500 }}>→</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* Same thing but light mode */
+function HueCardLight({ hue, name }) {
+  const sem = deriveSemantics(hue);
+  
+  return (
+    <div style={{ width: 380, fontFamily: font, color: '#111118', background: '#f7f7fa', borderRadius: 2, overflow: 'hidden', fontSize: 13 }}>
+      <div style={{ padding: '20px 24px 16px' }}>
+        <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 1.5, color: '#9898a8', marginBottom: 6, fontVariantNumeric: 'tabular-nums' }}>HUE {hue}° · LIGHT</div>
+        <div style={{ fontSize: 17, fontWeight: 600, letterSpacing: -0.3 }}>{name}</div>
+      </div>
+
+      <div style={{ padding: '0 24px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ display: 'flex', gap: 3 }}>
+          {[0.3, 0.4, 0.5, 0.6, 0.65, 0.7, 0.8, 0.9].map((l, i) => (
+            <div key={i} style={{ flex: 1, height: 28, borderRadius: R, background: `oklch(${l} ${l > 0.8 ? 0.06 : 0.18} ${hue})` }} />
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '7px 14px', background: '#111118', color: '#f7f7fa', border: 'none', borderRadius: R, cursor: 'pointer' }}>Primary</button>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '7px 14px', background: sem.primary, color: '#fff', border: 'none', borderRadius: R, cursor: 'pointer' }}>Accent</button>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '7px 14px', background: 'transparent', color: '#111118', border: '1px solid #e4e4ec', borderRadius: R, cursor: 'pointer' }}>Secondary</button>
+        </div>
+
+        <div style={{ display: 'flex', gap: 5 }}>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: sem.primarySoft, color: sem.primaryMuted }}>Feature</span>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: sem.successSoft, color: sem.success }}>Active</span>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: sem.warningSoft, color: sem.warning }}>Warning</span>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: sem.errorSoft, color: sem.error }}>Error</span>
+        </div>
+
+        <div style={{ border: '1px solid #e4e4ec', borderRadius: R, overflow: 'hidden' }}>
+          {['Dashboard', 'Analytics', 'Settings'].map((item, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '8px 12px', background: '#fff',
+              borderBottom: i < 2 ? '1px solid #e4e4ec' : 'none',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 6, height: 6, borderRadius: 2, background: i === 0 ? sem.primary : '#c0c0cc' }} />
+                <span style={{ fontSize: 12, fontWeight: 500 }}>{item}</span>
+              </div>
+              <span style={{ fontSize: 11, color: sem.primary, fontWeight: 500 }}>→</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* Fine-grained hue exploration across the range they liked */
+const hues = [
+  { hue: 230, name: 'True Blue', desc: 'Classic. Trust-forward. The baseline.' },
+  { hue: 240, name: 'Royal Blue', desc: 'Slightly deeper. More weight.' },
+  { hue: 250, name: 'Cobalt', desc: 'Between blue and indigo. Sharp.' },
+  { hue: 260, name: 'Indigo', desc: 'The Stripe zone. Blue-violet.' },
+  { hue: 270, name: 'Violet', desc: 'Purple territory. Creative, premium.' },
+  { hue: 280, name: 'Deep Violet', desc: 'Rich purple. More expressive.' },
+  { hue: 170, name: 'Teal', desc: 'Blue-green. Fresh, modern.' },
+  { hue: 160, name: 'Emerald', desc: 'Green-forward. Growth, clarity.' },
+  { hue: 195, name: 'Cerulean', desc: 'Sky blue-cyan. Open, bright.' },
+  { hue: 210, name: 'Steel Blue', desc: 'Cool, grounded, professional.' },
+];
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection title="Pick Your Hue — Blue to Violet Range" subtitle="One hue = full system. Semantics (success/error/warning) derived via color theory. All at oklch L=0.65, C=0.18.">
+        {hues.slice(0, 6).map((h, i) => (
+          <DCArtboard key={i} label={`${h.hue}° · ${h.name}`} width={380} height={480}>
+            <HueCard hue={h.hue} name={h.name} desc={h.desc} />
+          </DCArtboard>
+        ))}
+      </DCSection>
+
+      <DCSection title="Teal to Steel Range" subtitle="Cooler greens and mid-blues.">
+        {hues.slice(6).map((h, i) => (
+          <DCArtboard key={i} label={`${h.hue}° · ${h.name}`} width={380} height={480}>
+            <HueCard hue={h.hue} name={h.name} desc={h.desc} />
+          </DCArtboard>
+        ))}
+      </DCSection>
+
+      <DCSection title="Light Mode — Same Hues" subtitle="How each hue works on the light canvas.">
+        {hues.map((h, i) => (
+          <DCArtboard key={i} label={`${h.hue}° · ${h.name} · Light`} width={380} height={340}>
+            <HueCardLight hue={h.hue} name={h.name} />
+          </DCArtboard>
+        ))}
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

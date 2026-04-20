@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Accent Options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+const font = '"Inter", -apple-system, sans-serif';
+const R = 3; // radius: sharp
+
+function MiniSample({ mode, accent, accentName, accentFg }) {
+  const dark = mode === 'dark';
+  const d = dark ? {
+    pageBg: '#0c0c12', cardBg: '#111118', border: '#1e1e2a',
+    fg1: '#e0e0ee', fg2: '#8888a0', fg3: '#5a5a6e',
+    inputBg: '#0a0a10', subtleBg: '#15151f',
+    btnPrimary: '#e0e0ee', btnPrimaryFg: '#0a0a0f',
+  } : {
+    pageBg: '#f7f7fa', cardBg: '#fff', border: '#e4e4ec',
+    fg1: '#111118', fg2: '#6868808', fg3: '#9898a8',
+    inputBg: '#fff', subtleBg: '#eeeef4',
+    btnPrimary: '#111118', btnPrimaryFg: '#f7f7fa',
+  };
+
+  const af = accentFg || '#fff';
+
+  return (
+    <div style={{ width: 420, fontFamily: font, color: d.fg1, background: d.pageBg, borderRadius: 2, overflow: 'hidden', fontSize: 13 }}>
+      {/* Header */}
+      <div style={{ padding: '20px 24px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 1.5, textTransform: 'uppercase', color: d.fg3, marginBottom: 4 }}>{mode} mode</div>
+          <div style={{ fontSize: 17, fontWeight: 600, letterSpacing: -0.3 }}>
+            <span style={{ color: accent }}>{accentName}</span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <div style={{ width: 28, height: 28, borderRadius: R, background: accent }} />
+          <div style={{ width: 28, height: 28, borderRadius: R, background: d.fg1 }} />
+          <div style={{ width: 28, height: 28, borderRadius: R, background: d.border }} />
+        </div>
+      </div>
+
+      <div style={{ padding: '0 24px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {/* Buttons */}
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '7px 14px', background: d.btnPrimary, color: d.btnPrimaryFg, border: 'none', borderRadius: R, cursor: 'pointer' }}>Primary</button>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '7px 14px', background: accent, color: af, border: 'none', borderRadius: R, cursor: 'pointer' }}>Accent</button>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '7px 14px', background: 'transparent', color: d.fg1, border: `1px solid ${d.border}`, borderRadius: R, cursor: 'pointer' }}>Secondary</button>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '7px 14px', background: d.subtleBg, color: d.fg2, border: 'none', borderRadius: R, cursor: 'pointer' }}>Ghost</button>
+        </div>
+
+        {/* Input */}
+        <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ flex: 1, padding: '7px 10px', borderRadius: R, fontSize: 12, fontFamily: font, border: `1px solid ${d.border}`, background: d.inputBg, color: d.fg3 }}>Search...</div>
+          <button style={{ fontFamily: font, fontSize: 12, fontWeight: 500, padding: '7px 12px', background: accent, color: af, border: 'none', borderRadius: R, cursor: 'pointer' }}>Go</button>
+        </div>
+
+        {/* Feature row */}
+        <div style={{ display: 'flex', gap: 1, background: d.border, borderRadius: R, overflow: 'hidden' }}>
+          {['Intake', 'Plan', 'Build'].map((t, i) => (
+            <div key={i} style={{ flex: 1, background: d.cardBg, padding: 14 }}>
+              <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 1, color: d.fg3, marginBottom: 6, fontVariantNumeric: 'tabular-nums' }}>0{i+1}</div>
+              <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: -0.2 }}>{t}</div>
+              <div style={{ fontSize: 11, color: d.fg3, marginTop: 2 }}>Description text</div>
+            </div>
+          ))}
+        </div>
+
+        {/* List */}
+        <div style={{ border: `1px solid ${d.border}`, borderRadius: R, overflow: 'hidden' }}>
+          {['Dashboard', 'Settings', 'Logs'].map((item, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '9px 12px', background: d.cardBg,
+              borderBottom: i < 2 ? `1px solid ${d.border}` : 'none',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 7, height: 7, borderRadius: 2, background: i === 0 ? accent : d.fg3 }} />
+                <span style={{ fontSize: 12, fontWeight: 500 }}>{item}</span>
+              </div>
+              <span style={{ fontSize: 11, color: accent, fontWeight: 500, cursor: 'pointer' }}>→</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Badges */}
+        <div style={{ display: 'flex', gap: 5 }}>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: dark ? `${accent}20` : `${accent}15`, color: accent, border: `1px solid ${dark ? accent + '30' : accent + '25'}` }}>Active</span>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: dark ? '#1a2e1e' : '#e4f0e8', color: dark ? '#5aca70' : '#1a6a2a', border: `1px solid ${dark ? '#2a4a30' : '#c4dcc8'}` }}>Success</span>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: dark ? '#2e1a1a' : '#f4e4e4', color: dark ? '#ea6060' : '#a83030', border: `1px solid ${dark ? '#4a2a2a' : '#e0c8c8'}` }}>Error</span>
+          <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: R, background: d.subtleBg, color: d.fg3, border: `1px solid ${d.border}` }}>Pending</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* Accent options — vivid, not faded */
+const accents = [
+  { name: 'Electric Blue', color: '#3b82f6', fg: '#fff' },
+  { name: 'Violet', color: '#7c5bf0', fg: '#fff' },
+  { name: 'Emerald', color: '#10b981', fg: '#fff' },
+  { name: 'Coral', color: '#f05252', fg: '#fff' },
+  { name: 'Cyan', color: '#06b6d4', fg: '#fff' },
+  { name: 'Amber', color: '#f59e0b', fg: '#111' },
+  { name: 'Rose', color: '#e83e8c', fg: '#fff' },
+  { name: 'Indigo', color: '#635BFF', fg: '#fff' },
+];
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection title="Void (Dark) — Pick Your Accent" subtitle="Same dark base, sharp 3px corners. Eight vivid accent options — actual color, used with restraint.">
+        {accents.map((a, i) => (
+          <DCArtboard key={i} label={a.name} width={420} height={460}>
+            <MiniSample mode="dark" accent={a.color} accentName={a.name} accentFg={a.fg} />
+          </DCArtboard>
+        ))}
+      </DCSection>
+
+      <DCSection title="Dual Light — Same Accents" subtitle="Light mode counterpart with the same vivid accents. Black primary button stays.">
+        {accents.map((a, i) => (
+          <DCArtboard key={i} label={a.name} width={420} height={460}>
+            <MiniSample mode="light" accent={a.color} accentName={a.name} accentFg={a.fg} />
+          </DCArtboard>
+        ))}
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

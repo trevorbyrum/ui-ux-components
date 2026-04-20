@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Style Exploration v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Manrope:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Plus+Jakarta+Sans:ital,wght@0,300..700;1,300..700&family=Literata:ital,opsz,wght@0,7..72,300..700;1,7..72,300..700&family=Outfit:wght@300..700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+/* ── Direction D: Verdant ── */
+const dirD = {
+  name: 'Verdant',
+  desc: 'Muted greens · Warm grays · Grounded but fresh · Plus Jakarta Sans + Literata',
+  sans: '"Plus Jakarta Sans", sans-serif',
+  serif: '"Literata", serif',
+  bg: '#f7f8f6',
+  surface: '#ffffff',
+  surfaceAlt: '#f0f2ed',
+  border: '#e2e5dc',
+  fg1: '#1c2118',
+  fg2: '#5a6354',
+  fg3: '#8a9280',
+  accent: 'oklch(0.52 0.14 150)',
+  accentSoft: 'oklch(0.94 0.03 150)',
+  accentText: '#fff',
+  secondary: 'oklch(0.52 0.10 80)',
+  danger: 'oklch(0.55 0.16 22)',
+  radius: '6px',
+  shadow: '0 1px 4px rgba(30,40,20,0.06)',
+  shadowLg: '0 4px 16px rgba(30,40,20,0.09)',
+  borderStyle: '1px solid rgba(0,0,0,0.05)',
+};
+
+/* ── Direction E: Indigo Ink ── */
+const dirE = {
+  name: 'Indigo Ink',
+  desc: 'Deep indigo accent · Cool neutrals (not teal) · Precise · DM Sans + Source Serif 4',
+  sans: '"DM Sans", sans-serif',
+  serif: '"Source Serif 4", serif',
+  bg: '#f6f7fa',
+  surface: '#ffffff',
+  surfaceAlt: '#eef0f6',
+  border: '#dde0ea',
+  fg1: '#161828',
+  fg2: '#5a5c72',
+  fg3: '#8b8ea2',
+  accent: 'oklch(0.48 0.2 275)',
+  accentSoft: 'oklch(0.93 0.04 275)',
+  accentText: '#fff',
+  secondary: 'oklch(0.52 0.14 200)',
+  danger: 'oklch(0.55 0.18 25)',
+  radius: '6px',
+  shadow: '0 1px 4px rgba(20,20,50,0.06)',
+  shadowLg: '0 4px 16px rgba(20,20,50,0.1)',
+  borderStyle: '1px solid rgba(0,0,0,0.05)',
+};
+
+/* ── Direction F: Rose Clay ── */
+const dirF = {
+  name: 'Rose Clay',
+  desc: 'Dusty rose accent · Neutral canvas · Soft warmth without the Anthropic amber · Outfit + Lora',
+  sans: '"Outfit", sans-serif',
+  serif: '"Lora", serif',
+  bg: '#f8f7f6',
+  surface: '#ffffff',
+  surfaceAlt: '#f2f0ee',
+  border: '#e5e1dd',
+  fg1: '#22201e',
+  fg2: '#6b6560',
+  fg3: '#9a938c',
+  accent: 'oklch(0.56 0.14 10)',
+  accentSoft: 'oklch(0.94 0.03 10)',
+  accentText: '#fff',
+  secondary: 'oklch(0.52 0.12 230)',
+  danger: 'oklch(0.55 0.18 30)',
+  radius: '6px',
+  shadow: '0 1px 4px rgba(40,30,25,0.06)',
+  shadowLg: '0 4px 16px rgba(40,30,25,0.09)',
+  borderStyle: '1px solid rgba(0,0,0,0.05)',
+};
+
+/* ── Shared components ── */
+function Swatch({ color, label, size = 40 }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+      <div style={{ width: size, height: size, borderRadius: 6, background: color, border: '1px solid rgba(0,0,0,0.08)' }} />
+      {label && <span style={{ fontSize: 10, opacity: 0.6 }}>{label}</span>}
+    </div>
+  );
+}
+
+function DirectionCard({ d, letter }) {
+  const cardStyle = {
+    background: d.surface, borderRadius: d.radius, padding: 24,
+    border: d.borderStyle, boxShadow: d.shadow,
+  };
+  return (
+    <div style={{ width: 580, background: d.bg, padding: 36, fontFamily: d.sans, color: d.fg1, borderRadius: 2, overflow: 'hidden' }}>
+      <div style={{ marginBottom: 28 }}>
+        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase', color: d.fg3, marginBottom: 8 }}>Direction {letter}</div>
+        <h2 style={{ fontFamily: d.serif, fontSize: 32, fontWeight: 400, letterSpacing: -0.5, marginBottom: 6 }}>{d.name}</h2>
+        <p style={{ fontSize: 14, color: d.fg2, lineHeight: 1.5 }}>{d.desc}</p>
+      </div>
+
+      {/* Type */}
+      <div style={{ ...cardStyle, marginBottom: 20 }}>
+        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: d.fg3, marginBottom: 14 }}>Typography</div>
+        <div style={{ fontFamily: d.serif, fontSize: 28, fontWeight: 400, marginBottom: 4, letterSpacing: -0.3 }}>Display Heading</div>
+        <div style={{ fontFamily: d.sans, fontSize: 20, fontWeight: 600, marginBottom: 4 }}>Section Heading</div>
+        <div style={{ fontFamily: d.sans, fontSize: 15, fontWeight: 500, marginBottom: 4 }}>Subtitle text</div>
+        <div style={{ fontFamily: d.sans, fontSize: 14, color: d.fg2, lineHeight: 1.6 }}>Body text — the quick brown fox jumps over the lazy dog. Clean, legible, and balanced for long-form reading.</div>
+      </div>
+
+      {/* Colors */}
+      <div style={{ ...cardStyle, marginBottom: 20 }}>
+        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: d.fg3, marginBottom: 14 }}>Palette</div>
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+          <Swatch color={d.fg1} label="fg1" />
+          <Swatch color={d.fg2} label="fg2" />
+          <Swatch color={d.fg3} label="fg3" />
+          <Swatch color={d.border} label="border" />
+          <Swatch color={d.surfaceAlt} label="alt" />
+          <Swatch color={d.accent} label="accent" />
+          <Swatch color={d.secondary} label="secondary" />
+          <Swatch color={d.danger} label="danger" />
+        </div>
+      </div>
+
+      {/* Components */}
+      <div style={{ ...cardStyle }}>
+        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: d.fg3, marginBottom: 14 }}>Components</div>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 18, flexWrap: 'wrap', alignItems: 'center' }}>
+          <button style={{ fontFamily: d.sans, fontSize: 14, fontWeight: 600, padding: '9px 20px', background: d.accent, color: d.accentText, border: 'none', borderRadius: d.radius, cursor: 'pointer' }}>Primary</button>
+          <button style={{ fontFamily: d.sans, fontSize: 14, fontWeight: 600, padding: '9px 20px', background: 'transparent', color: d.fg1, border: `1.5px solid ${d.border}`, borderRadius: d.radius, cursor: 'pointer' }}>Secondary</button>
+          <button style={{ fontFamily: d.sans, fontSize: 14, fontWeight: 500, padding: '9px 20px', background: d.accentSoft, color: d.accent, border: 'none', borderRadius: d.radius, cursor: 'pointer' }}>Soft</button>
+          <button style={{ fontFamily: d.sans, fontSize: 14, fontWeight: 500, padding: '9px 16px', background: 'transparent', color: d.fg2, border: 'none', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3 }}>Link</button>
+        </div>
+        <div style={{ marginBottom: 18 }}>
+          <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 6, color: d.fg2 }}>Email address</div>
+          <div style={{ padding: '10px 14px', borderRadius: d.radius, fontSize: 14, fontFamily: d.sans, border: `1.5px solid ${d.border}`, background: d.bg, color: d.fg3 }}>you@example.com</div>
+        </div>
+        <div style={{ background: d.surfaceAlt, borderRadius: d.radius, padding: 18, border: d.borderStyle, boxShadow: d.shadow, display: 'flex', gap: 14, alignItems: 'center' }}>
+          <div style={{ width: 44, height: 44, borderRadius: d.radius, background: d.accentSoft, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 20, height: 20, borderRadius: '50%', background: d.accent }} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 600 }}>Card title</div>
+            <div style={{ fontSize: 13, color: d.fg2 }}>Supporting description text</div>
+          </div>
+          <div style={{ fontSize: 12, fontWeight: 500, color: d.accent, cursor: 'pointer' }}>View →</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DarkPreview({ d, letter }) {
+  const dk = { bg: '#111115', surface: '#1a1a20', surfaceAlt: '#222228', border: '#2e2e38', fg1: '#ebebf0', fg2: '#9898a8', fg3: '#6a6a7a' };
+  return (
+    <div style={{ width: 580, background: dk.bg, padding: 36, fontFamily: d.sans, color: dk.fg1, borderRadius: 2 }}>
+      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase', color: dk.fg3, marginBottom: 8 }}>Direction {letter} — Dark</div>
+      <h2 style={{ fontFamily: d.serif, fontSize: 28, fontWeight: 400, letterSpacing: -0.3, marginBottom: 20 }}>{d.name}</h2>
+      <div style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center' }}>
+        <button style={{ fontFamily: d.sans, fontSize: 14, fontWeight: 600, padding: '9px 20px', background: d.accent, color: d.accentText, border: 'none', borderRadius: d.radius, cursor: 'pointer' }}>Primary</button>
+        <button style={{ fontFamily: d.sans, fontSize: 14, fontWeight: 600, padding: '9px 20px', background: 'transparent', color: dk.fg1, border: `1.5px solid ${dk.border}`, borderRadius: d.radius, cursor: 'pointer' }}>Secondary</button>
+        <button style={{ fontFamily: d.sans, fontSize: 14, fontWeight: 500, padding: '9px 20px', background: dk.surfaceAlt, color: d.accent, border: 'none', borderRadius: d.radius, cursor: 'pointer' }}>Soft</button>
+      </div>
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 6, color: dk.fg2 }}>Email address</div>
+        <div style={{ padding: '10px 14px', borderRadius: d.radius, fontSize: 14, fontFamily: d.sans, border: `1.5px solid ${dk.border}`, background: dk.surface, color: dk.fg3 }}>you@example.com</div>
+      </div>
+      <div style={{ background: dk.surface, borderRadius: d.radius, padding: 18, border: `1px solid ${dk.border}`, display: 'flex', gap: 14, alignItems: 'center' }}>
+        <div style={{ width: 44, height: 44, borderRadius: d.radius, background: dk.surfaceAlt, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 20, height: 20, borderRadius: '50%', background: d.accent }} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 14, fontWeight: 600 }}>Card title</div>
+          <div style={{ fontSize: 13, color: dk.fg2 }}>Supporting description text</div>
+        </div>
+        <div style={{ fontSize: 12, fontWeight: 500, color: d.accent, cursor: 'pointer' }}>View →</div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection title="Round 2 — Three New Directions" subtitle="Shadow-based surfaces (border + shadow combo). Different accent families: green, indigo, rose.">
+        <DCArtboard label="D · Verdant" width={580} height={720}>
+          <DirectionCard d={dirD} letter="D" />
+        </DCArtboard>
+        <DCArtboard label="E · Indigo Ink" width={580} height={720}>
+          <DirectionCard d={dirE} letter="E" />
+        </DCArtboard>
+        <DCArtboard label="F · Rose Clay" width={580} height={720}>
+          <DirectionCard d={dirF} letter="F" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection title="Dark Mode" subtitle="Each direction in dark.">
+        <DCArtboard label="D · Dark" width={580} height={380}>
+          <DarkPreview d={dirD} letter="D" />
+        </DCArtboard>
+        <DCArtboard label="E · Dark" width={580} height={380}>
+          <DarkPreview d={dirE} letter="E" />
+        </DCArtboard>
+        <DCArtboard label="F · Dark" width={580} height={380}>
+          <DarkPreview d={dirF} letter="F" />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Modern Tech Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..700;1,300..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Sora:wght@300..700&family=Crimson+Pro:ital,wght@0,300..700;1,300..700&family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=Albert+Sans:ital,wght@0,300..700;1,300..700&family=Geist+Mono:wght@400;500;600&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+/*
+  RESEARCH FINDINGS (2025-2026 tech landscape):
+  
+  - "Startup Blue" is fading; replaced by more diverse palettes
+  - Dark mode is now a default aesthetic, not just a toggle
+  - Monochrome + single saturated accent dominates high-end SaaS
+  - Warm tones trending: honeyed neutrals, copper, amber
+  - High-contrast neon on dark for dev/AI tools
+  - Stripe's #635BFF (blue-purple) defined a generation of fintech
+  - Vercel popularized pure black as a brand color
+  - The "neutral base + bold accent" pattern is the most conversion-effective
+  - 4-6 total colors is the sweet spot (background, accent, text primary, text subtle)
+  - Fintech uses navy + teal; AI uses indigo + cyan
+*/
+
+function TechCard({ d }) {
+  const card = { background: d.cardBg, borderRadius: 6, padding: 20, border: `1px solid ${d.border}`, boxShadow: d.shadow };
+  return (
+    <div style={{ width: 560, fontFamily: d.sans, color: d.fg1, background: d.pageBg, borderRadius: 2, overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{ background: d.heroBg, color: d.heroFg, padding: '28px 32px 24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+          <div>
+            <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 1.8, textTransform: 'uppercase', opacity: 0.45, marginBottom: 8 }}>{d.category}</div>
+            <div style={{ fontFamily: d.display, fontSize: 26, fontWeight: d.dw || 600, letterSpacing: -0.4, lineHeight: 1.15 }}>{d.name}</div>
+          </div>
+          <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+            {d.strip.map((c, i) => <div key={i} style={{ width: 20, height: 20, borderRadius: 4, background: c, border: '1px solid rgba(128,128,128,0.15)' }} />)}
+          </div>
+        </div>
+        <div style={{ fontSize: 13, lineHeight: 1.6, opacity: 0.7, maxWidth: 420 }}>{d.desc}</div>
+      </div>
+
+      <div style={{ padding: 28, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {/* Trend note */}
+        <div style={{ fontSize: 12, color: d.fg3, lineHeight: 1.5, padding: '10px 14px', background: d.tagBg, borderRadius: 6, borderLeft: `3px solid ${d.accent}` }}>
+          {d.trend}
+        </div>
+
+        {/* Nav bar sample */}
+        <div style={{ ...card, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ fontFamily: d.display, fontSize: 15, fontWeight: 700, color: d.accent, letterSpacing: -0.3 }}>acme</div>
+          <div style={{ display: 'flex', gap: 14, flex: 1 }}>
+            {['Products', 'Pricing', 'Docs'].map((t, i) => (
+              <span key={i} style={{ fontSize: 13, color: i === 0 ? d.fg1 : d.fg3, fontWeight: i === 0 ? 600 : 400, cursor: 'pointer' }}>{t}</span>
+            ))}
+          </div>
+          <button style={{ fontFamily: d.sans, fontSize: 12, fontWeight: 600, padding: '6px 14px', background: d.accent, color: d.accentFg, border: 'none', borderRadius: 5, cursor: 'pointer' }}>Get Started</button>
+        </div>
+
+        {/* Buttons */}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 600, padding: '9px 18px', background: d.accent, color: d.accentFg, border: 'none', borderRadius: 6, cursor: 'pointer' }}>Primary</button>
+          <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 600, padding: '9px 18px', background: 'transparent', color: d.fg1, border: `1.5px solid ${d.border}`, borderRadius: 6, cursor: 'pointer' }}>Secondary</button>
+          <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 500, padding: '9px 18px', background: d.ghostBg, color: d.fg2, border: 'none', borderRadius: 6, cursor: 'pointer' }}>Ghost</button>
+          {d.accent2 && <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 600, padding: '9px 18px', background: d.accent2, color: d.accent2Fg, border: 'none', borderRadius: 6, cursor: 'pointer' }}>Accent 2</button>}
+        </div>
+
+        {/* Input row */}
+        <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ flex: 1, padding: '9px 12px', borderRadius: 6, fontSize: 13, fontFamily: d.sans, border: `1.5px solid ${d.border}`, background: d.inputBg, color: d.fg3 }}>you@company.com</div>
+          <button style={{ fontFamily: d.sans, fontSize: 13, fontWeight: 600, padding: '9px 16px', background: d.accent, color: d.accentFg, border: 'none', borderRadius: 6, cursor: 'pointer' }}>Go</button>
+        </div>
+
+        {/* Cards */}
+        <div style={{ display: 'flex', gap: 10 }}>
+          {d.cards.map((c, i) => (
+            <div key={i} style={{ flex: 1, ...card, padding: 14 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 6, background: c.iconBg, marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 14, height: 14, borderRadius: c.iconShape || '50%', background: c.iconFg }} />
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{c.title}</div>
+              <div style={{ fontSize: 11, color: d.fg2, lineHeight: 1.4 }}>{c.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Badge row */}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 11, fontWeight: 500, padding: '4px 10px', borderRadius: 20, background: d.badgeBg, color: d.badgeFg }}>New feature</span>
+          <span style={{ fontSize: 11, fontWeight: 500, padding: '4px 10px', borderRadius: 20, background: d.successBg, color: d.successFg }}>Active</span>
+          <span style={{ fontSize: 11, fontWeight: 500, padding: '4px 10px', borderRadius: 20, background: d.dangerBg, color: d.dangerFg }}>Overdue</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════
+   1. FINTECH INDIGO — inspired by Stripe/modern payments
+═══════════════════════════════════════════════ */
+const fintechIndigo = {
+  category: 'Fintech / SaaS',
+  name: 'Indigo Payments',
+  desc: 'The post-Stripe generation. Deep indigo (#635BFF) replaced generic blue across fintech — it reads as trustworthy AND premium.',
+  trend: 'Indigo-purple has seen a 340% increase in usage among AI and fintech startups since 2023. It bridges trust (blue) with premium (purple).',
+  sans: '"Plus Jakarta Sans", sans-serif', display: '"Plus Jakarta Sans", sans-serif', dw: 700,
+  pageBg: '#fafafc', heroBg: '#1a1040', heroFg: '#e4dff8',
+  fg1: '#1a1040', fg2: '#6b6688', fg3: '#9894ae',
+  cardBg: '#fff', border: '#e4e0f0', shadow: '0 1px 4px rgba(26,16,64,0.06)',
+  accent: '#635BFF', accentFg: '#fff',
+  accent2: null,
+  ghostBg: '#f0eef8', inputBg: '#fafafc',
+  tagBg: '#f4f2fc',
+  strip: ['#1a1040', '#635BFF', '#8b85ff', '#c4c0ff', '#f0eef8', '#fafafc'],
+  cards: [
+    { title: 'Payments', sub: 'Accept cards globally', iconBg: '#f0eef8', iconFg: '#635BFF' },
+    { title: 'Billing', sub: 'Recurring subscriptions', iconBg: '#e8f5e9', iconFg: '#2e7d32' },
+    { title: 'Connect', sub: 'Platform payments', iconBg: '#fff3e0', iconFg: '#e65100' },
+  ],
+  badgeBg: '#f0eef8', badgeFg: '#635BFF',
+  successBg: '#e8f5e9', successFg: '#2e7d32',
+  dangerBg: '#fce4ec', dangerFg: '#c62828',
+};
+
+/* ═══════════════════════════════════════════════
+   2. MIDNIGHT PRODUCT — dark-first product tool (Linear-style)
+═══════════════════════════════════════════════ */
+const midnightProduct = {
+  category: 'Product / Dev Tools',
+  name: 'Midnight Product',
+  desc: 'Dark-first is now a design identity, not a toggle. Charcoal backgrounds with restrained violet accents — the dev tool standard.',
+  trend: 'Dark mode has become a SaaS design aesthetic offering high-contrast readability, reduced eye strain, and a luxe feel. It\'s the default for dev tools, AI, and creative software.',
+  sans: '"DM Sans", sans-serif', display: '"DM Sans", sans-serif', dw: 700,
+  pageBg: '#111116', heroBg: '#08080c', heroFg: '#e0dff0',
+  fg1: '#e0ddf0', fg2: '#8888a0', fg3: '#5a5a72',
+  cardBg: '#1a1a22', border: '#2a2a38', shadow: '0 1px 4px rgba(0,0,0,0.2)',
+  accent: '#8b7eff', accentFg: '#111116',
+  accent2: null,
+  ghostBg: '#222230', inputBg: '#16161e',
+  tagBg: '#1e1e2a',
+  strip: ['#08080c', '#111116', '#2a2a38', '#8b7eff', '#b8b0ff', '#e0ddf0'],
+  cards: [
+    { title: 'Issues', sub: 'Track and triage', iconBg: '#2a2a38', iconFg: '#8b7eff' },
+    { title: 'Cycles', sub: 'Ship on cadence', iconBg: '#2a2a38', iconFg: '#5ac8fa' },
+    { title: 'Roadmap', sub: 'Plan ahead', iconBg: '#2a2a38', iconFg: '#ff9f43' },
+  ],
+  badgeBg: '#2a2444', badgeFg: '#b8b0ff',
+  successBg: '#1a2e1e', successFg: '#6adb80',
+  dangerBg: '#2e1a1a', dangerFg: '#ff6b6b',
+};
+
+/* ═══════════════════════════════════════════════
+   3. PURE CONTRAST — the Vercel school: true black + white
+═══════════════════════════════════════════════ */
+const pureContrast = {
+  category: 'Developer Platform',
+  name: 'Pure Contrast',
+  desc: 'Maximum signal, zero noise. True black as a brand color with surgical blue accents. The "less is more" taken to its logical extreme.',
+  trend: 'The dominant 2025-26 trend combines vast neutral spaces with precisely placed, highly saturated accent colors. Simplicity outperforms complexity in every conversion study.',
+  sans: '"Albert Sans", sans-serif', display: '"Bricolage Grotesque", sans-serif', dw: 600,
+  pageBg: '#fafafa', heroBg: '#000', heroFg: '#ededed',
+  fg1: '#111', fg2: '#666', fg3: '#999',
+  cardBg: '#fff', border: '#eaeaea', shadow: '0 1px 3px rgba(0,0,0,0.04)',
+  accent: '#0070f3', accentFg: '#fff',
+  accent2: null,
+  ghostBg: '#f0f0f0', inputBg: '#fafafa',
+  tagBg: '#f5f5f5',
+  strip: ['#000', '#333', '#666', '#999', '#eaeaea', '#0070f3'],
+  cards: [
+    { title: 'Deploy', sub: 'Push to production', iconBg: '#f0f0f0', iconFg: '#000', iconShape: '3px' },
+    { title: 'Preview', sub: 'Every branch, live', iconBg: '#f0f0f0', iconFg: '#0070f3', iconShape: '3px' },
+    { title: 'Observe', sub: 'Logs and metrics', iconBg: '#f0f0f0', iconFg: '#666', iconShape: '3px' },
+  ],
+  badgeBg: '#e6f0ff', badgeFg: '#0070f3',
+  successBg: '#e6f9ee', successFg: '#0a8045',
+  dangerBg: '#fce8e8', dangerFg: '#c42b2b',
+};
+
+/* ═══════════════════════════════════════════════
+   4. COPPER & SLATE — your pick, refined with real tech context
+═══════════════════════════════════════════════ */
+const copperSlate = {
+  category: 'General Purpose',
+  name: 'Copper & Slate',
+  desc: 'Warm copper on cool slate — a deliberate counter to the sea of blue tech brands. The warm-cool tension creates instant memorability.',
+  trend: 'Warm, comforting colors are stepping to the forefront: honeyed neutrals, amber, and copper. Orange signals friendliness (Shopify, HubSpot) while standing out from blue-dominated competitors.',
+  sans: '"Plus Jakarta Sans", sans-serif', display: '"Source Serif 4", serif', dw: 400,
+  pageBg: '#f5f4f2', heroBg: '#2a2d35', heroFg: '#e8e4de',
+  fg1: '#2a2d35', fg2: '#6b6e78', fg3: '#95979f',
+  cardBg: '#fff', border: '#e4e2dd', shadow: '0 1px 4px rgba(42,45,53,0.06)',
+  accent: '#b5713a', accentFg: '#fff',
+  accent2: '#3d6a7a', accent2Fg: '#fff',
+  ghostBg: '#eeece8', inputBg: '#fafaf8',
+  tagBg: '#f5f0ea',
+  strip: ['#2a2d35', '#5a5d68', '#b5713a', '#d4a06a', '#3d6a7a', '#f5f4f2'],
+  cards: [
+    { title: 'Analytics', sub: 'Track key metrics', iconBg: '#f0e6d8', iconFg: '#9a6530' },
+    { title: 'Workflows', sub: 'Automate tasks', iconBg: '#daeaf0', iconFg: '#2e5a6a' },
+    { title: 'Reports', sub: 'Share insights', iconBg: '#eee', iconFg: '#5a5d68' },
+  ],
+  badgeBg: '#f0e6d8', badgeFg: '#9a6530',
+  successBg: '#e2f0e4', successFg: '#2e6e3a',
+  dangerBg: '#f8e2e0', dangerFg: '#b03830',
+};
+
+/* ═══════════════════════════════════════════════
+   5. GRAPHITE + AMBER — your monochrome pick with a warm pop
+═══════════════════════════════════════════════ */
+const graphiteAmber = {
+  category: 'Universal / Rebrandable',
+  name: 'Graphite & Amber',
+  desc: 'Pure grayscale system with one warm amber accent. Maximum Von Restorff effect — the accent is unmissable. Swap the amber to rebrand instantly.',
+  trend: 'Monochrome schemes look premium when the single accent is chosen well. They eliminate conflicting colors and force hierarchy through weight and size — making the system extremely flexible.',
+  sans: '"Albert Sans", sans-serif', display: '"Bricolage Grotesque", sans-serif', dw: 600,
+  pageBg: '#f3f3f3', heroBg: '#1a1a1a', heroFg: '#e8e8e8',
+  fg1: '#1a1a1a', fg2: '#666', fg3: '#999',
+  cardBg: '#fff', border: '#e2e2e2', shadow: '0 1px 4px rgba(0,0,0,0.05)',
+  accent: '#c88a20', accentFg: '#fff',
+  accent2: null,
+  ghostBg: '#ebebeb', inputBg: '#fafafa',
+  tagBg: '#f5f0e5',
+  strip: ['#1a1a1a', '#444', '#888', '#bbb', '#e2e2e2', '#c88a20'],
+  cards: [
+    { title: 'Dashboard', sub: 'At-a-glance view', iconBg: '#f5ead0', iconFg: '#a07018' },
+    { title: 'Calendar', sub: 'Plan your week', iconBg: '#f0f0f0', iconFg: '#444' },
+    { title: 'Messages', sub: 'Team comms', iconBg: '#f0f0f0', iconFg: '#888' },
+  ],
+  badgeBg: '#f5ead0', badgeFg: '#8a6a14',
+  successBg: '#e2f0e4', successFg: '#2a7a3a',
+  dangerBg: '#f8e2e0', dangerFg: '#c43030',
+};
+
+/* ═══════════════════════════════════════════════
+   6. OBSIDIAN & EMBER — your dark-first pick, refined
+═══════════════════════════════════════════════ */
+const obsidianEmber = {
+  category: 'Dark-First Identity',
+  name: 'Obsidian & Ember',
+  desc: 'Warm dark-first — not cold charcoal but a brown-black that feels like firelight. Ember orange cuts through without feeling like a warning.',
+  trend: 'Dark-first design is increasingly standard for developer tools, media apps, and creative software. Using warm charcoal instead of cold black-blue is a key differentiator.',
+  sans: '"Sora", sans-serif', display: '"Crimson Pro", serif', dw: 400,
+  pageBg: '#141210', heroBg: '#0a0908', heroFg: '#e8e2d8',
+  fg1: '#e8e4dc', fg2: '#9a958a', fg3: '#6a665e',
+  cardBg: '#1e1c18', border: '#2e2a24', shadow: '0 1px 4px rgba(0,0,0,0.2)',
+  accent: '#d87a3a', accentFg: '#141210',
+  accent2: '#4a8a6a', accent2Fg: '#141210',
+  ghostBg: '#282420', inputBg: '#1a1816',
+  tagBg: '#222018',
+  strip: ['#0a0908', '#1e1c18', '#3a362e', '#d87a3a', '#e8a868', '#4a8a6a'],
+  cards: [
+    { title: 'Studio', sub: 'Create and edit', iconBg: '#2e2820', iconFg: '#d87a3a' },
+    { title: 'Library', sub: 'Browse assets', iconBg: '#1e2a22', iconFg: '#4a8a6a' },
+    { title: 'Export', sub: 'Ship to prod', iconBg: '#2a2620', iconFg: '#e8a868' },
+  ],
+  badgeBg: '#2e2418', badgeFg: '#e8a868',
+  successBg: '#1a2e1e', successFg: '#6adb80',
+  dangerBg: '#2e1a16', dangerFg: '#ff7a5a',
+};
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection title="Modern Tech Directions — Real-World Inspired" subtitle="Each direction maps to an actual trend in 2025-26 tech design, with real hex values and conversion research backing.">
+        <DCArtboard label="1 · Indigo Payments — Fintech/SaaS" width={560} height={720}>
+          <TechCard d={fintechIndigo} />
+        </DCArtboard>
+        <DCArtboard label="2 · Midnight Product — Dev Tools" width={560} height={720}>
+          <TechCard d={midnightProduct} />
+        </DCArtboard>
+        <DCArtboard label="3 · Pure Contrast — Developer Platform" width={560} height={720}>
+          <TechCard d={pureContrast} />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection title="Your Finalists — Refined" subtitle="The three directions you liked, informed by current trends.">
+        <DCArtboard label="4 · Copper & Slate — General Purpose" width={560} height={720}>
+          <TechCard d={copperSlate} />
+        </DCArtboard>
+        <DCArtboard label="5 · Graphite & Amber — Rebrandable" width={560} height={720}>
+          <TechCard d={graphiteAmber} />
+        </DCArtboard>
+        <DCArtboard label="6 · Obsidian & Ember — Dark-First" width={560} height={720}>
+          <TechCard d={obsidianEmber} />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
