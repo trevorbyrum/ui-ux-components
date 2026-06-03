@@ -148,6 +148,34 @@ function cardBorderStyle(t) {
   };
 }
 
+/* ── Glass card style helper ── */
+function glassStyle(t, { radius } = {}) {
+  const H = t.hue;
+  return {
+    backgroundImage: `linear-gradient(155deg, oklch(0.42 0.13 ${H} / 0.4), oklch(0.26 0.05 ${H} / 0.3))`,
+    backdropFilter: 'blur(16px) saturate(135%)',
+    WebkitBackdropFilter: 'blur(16px) saturate(135%)',
+    border: `1px solid oklch(0.7 0.16 ${H} / 0.4)`,
+    borderTopColor: `oklch(0.85 0.16 ${H} / 0.6)`,
+    borderRadius: radius ?? t.radiusLg,
+    boxShadow: `0 8px 22px oklch(0.4 0.18 ${H} / 0.3), inset 0 1px 0 rgba(255,255,255,0.12)`,
+  };
+}
+
+/* ── Glass Card ── */
+function GlassCard({ children, theme, padding = 16, radius, style = {}, ...props }) {
+  const t = theme;
+  return (
+    <div style={{
+      position: 'relative',
+      padding,
+      fontFamily: t.font,
+      ...glassStyle(t, { radius }),
+      ...style,
+    }} {...props}>{children}</div>
+  );
+}
+
 /* ── Card ── */
 function Card({ children, theme, padding = 16, raised, style = {}, ...props }) {
   const t = theme;
@@ -304,6 +332,6 @@ function Table({ columns, rows, theme }) {
 }
 
 Object.assign(window, {
-  Button, Input, Select, Toggle, Badge, Card, Divider, ListItem,
+  Button, Input, Select, Toggle, Badge, Card, GlassCard, glassStyle, Divider, ListItem,
   Tabs, Segmented, Avatar, Dot, Stat, Modal, Table,
 });
